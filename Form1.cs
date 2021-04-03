@@ -122,7 +122,7 @@ namespace CircleDetect
             Graphics g = Graphics.FromImage(img);
             Graphics h = Graphics.FromImage(copia);
 
-            Pen otherPen = new Pen(Color.Red,5);
+            Pen otherPen = new Pen(Color.Blue,7);
             SolidBrush white = new SolidBrush(White);
 
             g.FillEllipse(white, mitad - pixelCount-2, centro - pixelCount-1, pixelCount * 2+4, pixelCount * 2+4);
