@@ -122,11 +122,10 @@ namespace CircleDetect
             Graphics g = Graphics.FromImage(img);
             Graphics h = Graphics.FromImage(copia);
 
-            Pen blackPen = new Pen(Color.Red);
-            Pen otherPen = new Pen(Color.Red);
+            Pen otherPen = new Pen(Color.Blue,7);
             SolidBrush white = new SolidBrush(White);
+
             g.FillEllipse(white, mitad - pixelCount-2, centro - pixelCount-1, pixelCount * 2+4, pixelCount * 2+4);
-            h.DrawEllipse(blackPen, mitad- pixelCount +1, centro - pixelCount +1, pixelCount*2-2, pixelCount*2-2);
             h.DrawEllipse(otherPen, mitad - pixelCount , centro - pixelCount , pixelCount * 2 , pixelCount * 2 );
             circulo += 1;
             String drawString = circulo.ToString();
@@ -159,19 +158,13 @@ namespace CircleDetect
             int h = img.Height;
             bool buscar=true;
             int w = img.Width;
+            Color bit;
             for (int i = inicioy; i < h; i++)
             {
                 for (int j = 0; j < w; j++)
                 {
-                    if (img.GetPixel(j,i)== Color.Red)
-                    {
-                        buscar = false;
-                    }
-                    else if (img.GetPixel(j,i)==Color.Red && img.GetPixel(j+1,i)== White) 
-                    {
-                        buscar = true;
-                    }
-                    else if (img.GetPixel(j, i) != Color.Red && buscar && img.GetPixel(j, i).R != 255 && img.GetPixel(j, i).G != 255 && img.GetPixel(j, i).B != 255)
+                    bit = img.GetPixel(j, i);
+                    if (buscar && bit.R == bit.G && bit.B == bit.R && bit.R != 255)
                     {
                         DetC(j, i, img);
                         return FindCirc(img,i);      
