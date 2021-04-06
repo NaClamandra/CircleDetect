@@ -15,18 +15,21 @@ namespace CircleDetect
         Color Black = Color.FromArgb(255, 0, 0, 0);
         Color White = Color.FromArgb(255, 255, 255, 255);
         int circulo = 0;
+        Grafo grafo = new Grafo();
         Bitmap copia;
         List<Circulo> Circulos = new List<Circulo>();
-        List<Circulo> BubbleCirc = new List<Circulo>();
+        List<Point> puntC = new List<Point>();
+        List<Circulo> masCercanos = new List<Circulo>();
+        /*List<Circulo> BubbleCirc = new List<Circulo>();
         List<Circulo> SelectCirc = new List<Circulo>();
-        List<Circulo> InsertCirc = new List<Circulo>();
+        List<Circulo> InsertCirc = new List<Circulo>();*/
 
         public Form_Principal()
         {
             InitializeComponent();
         }
         //Bubble sort
-        public static void exchange(List<Circulo> circulos, int m, int n)
+        /*public static void exchange(List<Circulo> circulos, int m, int n)
         {
             Circulo temporary;
 
@@ -53,7 +56,7 @@ namespace CircleDetect
         {
             int minPos = start;
             for (int pos = start + 1; pos < circulo.Count; pos++)
-                if (circulo[pos].centrox < circulo[minPos].centrox)
+                if (circulo[pos].puntoC.X < circulo[minPos].puntoC.X)
                     minPos = pos;
             return minPos;
         }
@@ -77,12 +80,12 @@ namespace CircleDetect
 
             for (j = 1; j < N; j++)
             {
-                for (i = j; i > 0 && circulo[i].centroy < circulo[i - 1].centroy; i--)
+                for (i = j; i > 0 && circulo[i].puntoC.Y < circulo[i - 1].puntoC.Y; i--)
                 {
                     exchange(circulo, i, i - 1);
                 }
             }
-        }
+        }*/
 
         public void DetC(int j, int i, Bitmap img)
         {
@@ -136,7 +139,7 @@ namespace CircleDetect
 
             // Draw string to screen.
             h.DrawString(drawString, drawFont, drawBrush, mitad +10, centro+10, drawFormat);
-            copia.SetPixel(mitad, centro, Color.Green);
+            /*copia.SetPixel(mitad, centro, Color.Green);
             copia.SetPixel(mitad, centro + 1, Color.Green);
             copia.SetPixel(mitad - 1, centro, Color.Green);
             copia.SetPixel(mitad + 1, centro, Color.Green);
@@ -144,11 +147,12 @@ namespace CircleDetect
             copia.SetPixel(mitad, centro+2, Color.Green);
             copia.SetPixel(mitad - 2, centro, Color.Green);
             copia.SetPixel(mitad+2, centro, Color.Green);
-            copia.SetPixel(mitad, centro - 2, Color.Green);
+            copia.SetPixel(mitad, centro - 2, Color.Green);*/
 
             double area = (3.1416 * (pixelCount * pixelCount));
 
             Circulo circo = new Circulo(circulo,mitad,centro,pixelCount,area);
+            puntC.Add(circo.puntoC);
             Circulos.Add(circo);
             pictureBox1.Image = copia;         
         }
@@ -193,7 +197,18 @@ namespace CircleDetect
             circulo = 0;
             listBox1.DataSource = null;
             listBox1.DataSource = Circulos ;
-            BubbleCirc = Circulos;
+
+            Pen otherPen = new Pen(Color.Yellow, 20);
+            Graphics h = Graphics.FromImage(copia);
+            masCercanos = ButeForce.lista_p(Circulos);
+            foreach (var item in masCercanos)
+            {
+                h.DrawLine(otherPen, item.puntoC,new Point(item.puntoC.X,item.puntoC.Y+1));
+                h.DrawLine(otherPen, item.puntoC, new Point(item.puntoC.X+1, item.puntoC.Y));
+            }
+            listBox3.DataSource = null;
+            listBox3.DataSource = masCercanos;
+            /*BubbleCirc = Circulos;
             SelectCirc = Circulos;
             InsertCirc = Circulos;
 
@@ -208,9 +223,15 @@ namespace CircleDetect
             InsertionSort(InsertCirc);
             listBox4.DataSource = null;
             listBox4.DataSource = InsertCirc;
-
+            */
             button2.Enabled = false;
             Circulos.Clear();
+            puntC.Clear();
+            masCercanos.Clear();
+            foreach (Circulo item in Circulos)
+            {
+                grafo.añadirVert(new Grafo.Vertices(item.puntoC));
+            }
         }
     }
 }
