@@ -14,6 +14,10 @@ namespace CircleDetect
         public static List<Circulo> lista_p(List<Circulo> points)
         {
             List<Circulo> closerPoints = new List<Circulo>();
+            if (points.Count<2)
+            {
+                return new List<Circulo>();
+            }
             closerPoints.Add( points[0]);
             closerPoints.Add( points[1]);
             float minimum = distance(closerPoints[0].puntoC, closerPoints[1].puntoC);

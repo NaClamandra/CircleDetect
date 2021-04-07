@@ -16,7 +16,7 @@ namespace CircleDetect
         Color White = Color.FromArgb(255, 255, 255, 255);
         int circulo = 0;
         Grafo grafo = new Grafo();
-        Bitmap copia;
+        Bitmap copia, copiaBresenham;
         List<Circulo> Circulos = new List<Circulo>();
         List<Point> puntC = new List<Point>();
         List<Circulo> masCercanos = new List<Circulo>();
@@ -129,7 +129,7 @@ namespace CircleDetect
             SolidBrush white = new SolidBrush(White);
 
             g.FillEllipse(white, mitad - pixelCount-2, centro - pixelCount-1, pixelCount * 2+4, pixelCount * 2+4);
-            h.DrawEllipse(otherPen, mitad - pixelCount , centro - pixelCount , pixelCount * 2 , pixelCount * 2 );
+            //h.DrawEllipse(otherPen, mitad - pixelCount , centro - pixelCount , pixelCount * 2 , pixelCount * 2 );
             circulo += 1;
             String drawString = circulo.ToString();
             Font drawFont = new Font("Arial", 20);
@@ -154,7 +154,8 @@ namespace CircleDetect
             Circulo circo = new Circulo(circulo,mitad,centro,pixelCount,area);
             puntC.Add(circo.puntoC);
             Circulos.Add(circo);
-            pictureBox1.Image = copia;         
+            pictureBox1.Image = copia;
+            //MessageBox.Show("Cambio");
         }
 
         public bool FindCirc(Bitmap img, int inicioy=0)
@@ -178,6 +179,35 @@ namespace CircleDetect
             return false;
         }
 
+        bool bresenham(Bitmap bresen, Circulo circ1, Circulo circ2)
+        {
+            Graphics g = Graphics.FromImage(bresen);
+            SolidBrush white = new SolidBrush(White);
+            Color pixel;
+            g.FillEllipse(white, circ1.puntoC.X - circ1.radio - 2, circ1.puntoC.Y - circ1.radio - 1, circ1.radio * 2 + 4, circ1.radio * 2 + 4);
+            g.FillEllipse(white, circ2.puntoC.X - circ2.radio - 2, circ2.puntoC.Y - circ2.radio - 1, circ2.radio * 2 + 4, circ2.radio * 2 + 4);
+            //pictureBox2.Image = bresen;
+            int x0 = circ1.puntoC.X,  y0= circ1.puntoC.Y,  x1=circ2.puntoC.X,  y1=circ2.puntoC.Y;
+            bool obstacle= false;
+            int dx = Math.Abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+            int dy = Math.Abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+            int err = (dx > dy ? dx : -dy) / 2, e2;
+            while(true)
+            {
+                //bresen.SetPixel(x0, y0, Color.Red);
+                pixel = bresen.GetPixel(x0, y0);
+                if(pixel.R!=255&&pixel.G!=255&&pixel.B!=255)
+                {
+                    obstacle = true;
+                }
+                if (x0 == x1 && y0 == y1) break;
+                e2 = err;
+                if (e2 > -dx) { err -= dy; x0 += sx; }
+                if (e2 < dy) { err += dx; y0 += sy; }
+            }
+            return obstacle;
+        }
+
         private void buttonBrowse_Click(object sender, EventArgs e)
         {
             var ofd = new OpenFileDialog();
@@ -193,18 +223,21 @@ namespace CircleDetect
             
             var img = (Bitmap)pictureBox1.Image;
             copia = (Bitmap)img.Clone();
+            copiaBresenham = (Bitmap)img.Clone();
             FindCirc((Bitmap)pictureBox1.Image);
             circulo = 0;
             listBox1.DataSource = null;
             listBox1.DataSource = Circulos ;
-
             Pen otherPen = new Pen(Color.Yellow, 20);
             Graphics h = Graphics.FromImage(copia);
             masCercanos = ButeForce.lista_p(Circulos);
-            foreach (var item in masCercanos)
+            if (masCercanos.Count == 2)
             {
-                h.DrawLine(otherPen, item.puntoC,new Point(item.puntoC.X,item.puntoC.Y+1));
-                h.DrawLine(otherPen, item.puntoC, new Point(item.puntoC.X+1, item.puntoC.Y));
+                foreach (var item in masCercanos)
+                {
+                    h.DrawLine(otherPen, item.puntoC, new Point(item.puntoC.X, item.puntoC.Y + 1));
+                    h.DrawLine(otherPen, item.puntoC, new Point(item.puntoC.X + 1, item.puntoC.Y));
+                }
             }
             listBox3.DataSource = null;
             listBox3.DataSource = masCercanos;
@@ -224,6 +257,14 @@ namespace CircleDetect
             listBox4.DataSource = null;
             listBox4.DataSource = InsertCirc;
             */
+
+            bool resultado = bresenham(copiaBresenham, Circulos[0], Circulos[1]);
+            if (resultado == false)
+            {
+                h.DrawLine(otherPen, Circulos[0].puntoC, Circulos[1].puntoC);
+            }
+            //MessageBox.Show(resultado.ToString());
+
             button2.Enabled = false;
             Circulos.Clear();
             puntC.Clear();
