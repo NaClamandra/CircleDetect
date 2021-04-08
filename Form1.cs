@@ -14,9 +14,7 @@ namespace CircleDetect
     {
         Color Black = Color.FromArgb(255, 0, 0, 0);
         Color White = Color.FromArgb(255, 255, 255, 255);
-        int circulo = 0;
-        Grafo grafo = new Grafo();
-        
+        int circulo = 0; 
         Bitmap copia, copiaBresenham;
         List<Circulo> Circulos = new List<Circulo>();
         List<Point> puntC = new List<Point>();
@@ -116,7 +114,7 @@ namespace CircleDetect
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            
+            Grafo grafo = new Grafo();
             var img = (Bitmap)pictureBox1.Image;
             copia = (Bitmap)img.Clone();
             copiaBresenham = (Bitmap)img.Clone();
@@ -127,16 +125,11 @@ namespace CircleDetect
             Pen otherPen = new Pen(Color.Yellow, 20);
             Graphics h = Graphics.FromImage(copia);
             masCercanos = ButeForce.lista_p(Circulos);
-
             foreach (Grafo.Vertices item in grafo.calcularVertices(copia, Circulos))
             {
                 grafo.añadirVert(item);
             }
-
             grafo.mostrarGrafo(copia);
-
-
-
             if (masCercanos.Count == 2)
             {
                 foreach (var item in masCercanos)
