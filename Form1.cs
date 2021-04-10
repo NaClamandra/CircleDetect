@@ -24,7 +24,6 @@ namespace CircleDetect
         {
             InitializeComponent();
         }
-
         public void DetC(int j, int i, Bitmap img)
         {
             int pixelCount = 0, mitad, centro;
@@ -59,14 +58,12 @@ namespace CircleDetect
                 pixelCount = pixelCount / 2;
                 centro = i - pixelCount - 1;
             }
-
             Graphics g = Graphics.FromImage(img);
             Graphics h = Graphics.FromImage(copia);
             Pen otherPen = new Pen(Color.Blue,7);
             SolidBrush white = new SolidBrush(White);
             g.FillEllipse(white, mitad - pixelCount-2, centro - pixelCount-1, pixelCount * 2+4, pixelCount * 2+4);
             circulo += 1;
-            //String drawString = circulo.ToString();
             double area = (3.1416 * (pixelCount * pixelCount));
             Circulo circo = new Circulo(circulo,mitad,centro,pixelCount,area);
             puntC.Add(circo.puntoC);
@@ -114,22 +111,22 @@ namespace CircleDetect
             circulo = 0;
             listBox1.DataSource = null;
             listBox1.DataSource = Circulos ;
-            Pen otherPen = new Pen(Color.Yellow, 20);
+            Pen otherPen = new Pen(Color.Yellow, 50);
             Graphics h = Graphics.FromImage(copia);
             masCercanos = ButeForce.lista_p(Circulos);
             foreach (Grafo.Vertices item in grafo.calcularVertices(copia, Circulos))
             {
                 grafo.añadirVert(item);
-            }
-            grafo.mostrarGrafo(copia);
+            }  
             if (masCercanos.Count == 2)
             {
                 foreach (var item in masCercanos)
                 {
-                    h.DrawLine(otherPen, item.puntoC, new Point(item.puntoC.X, item.puntoC.Y + 1));
-                    h.DrawLine(otherPen, item.puntoC, new Point(item.puntoC.X + 1, item.puntoC.Y));
+                    SolidBrush yellow = new SolidBrush(Color.LightGray);
+                    h.FillEllipse(yellow, item.puntoC.X - (item.radio/2), item.puntoC.Y-(item.radio / 2), item.radio, item.radio);
                 }
             }
+            grafo.mostrarGrafo(copia);
             grafo.matriz(dataGridView1); 
             button2.Enabled = false;
             Circulos.Clear();
