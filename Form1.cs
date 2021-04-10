@@ -66,19 +66,13 @@ namespace CircleDetect
             SolidBrush white = new SolidBrush(White);
             g.FillEllipse(white, mitad - pixelCount-2, centro - pixelCount-1, pixelCount * 2+4, pixelCount * 2+4);
             circulo += 1;
-            String drawString = circulo.ToString();
-            Font drawFont = new Font("Arial", 20);
-            SolidBrush drawBrush = new SolidBrush(Color.Orange);
-            StringFormat drawFormat = new StringFormat();
-            drawFormat.FormatFlags = StringFormatFlags.DirectionRightToLeft;
-            h.DrawString(drawString, drawFont, drawBrush, mitad +10, centro+10, drawFormat);
+            //String drawString = circulo.ToString();
             double area = (3.1416 * (pixelCount * pixelCount));
             Circulo circo = new Circulo(circulo,mitad,centro,pixelCount,area);
             puntC.Add(circo.puntoC);
             Circulos.Add(circo);
             pictureBox1.Image = copia;
         }
-
         public bool FindCirc(Bitmap img, int inicioy=0)
         {
             int h = img.Height;
@@ -99,9 +93,6 @@ namespace CircleDetect
             }
             return false;
         }
-
-        
-
         private void buttonBrowse_Click(object sender, EventArgs e)
         {
             var ofd = new OpenFileDialog();
@@ -114,6 +105,7 @@ namespace CircleDetect
         }
         private void button2_Click(object sender, EventArgs e)
         {
+            dataGridView1.Columns.Clear();
             Grafo grafo = new Grafo();
             var img = (Bitmap)pictureBox1.Image;
             copia = (Bitmap)img.Clone();
@@ -138,9 +130,7 @@ namespace CircleDetect
                     h.DrawLine(otherPen, item.puntoC, new Point(item.puntoC.X + 1, item.puntoC.Y));
                 }
             }
-            listBox3.DataSource = null;
-            listBox3.DataSource = masCercanos;           
-
+            grafo.matriz(dataGridView1); 
             button2.Enabled = false;
             Circulos.Clear();
             puntC.Clear();

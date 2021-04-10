@@ -35,12 +35,10 @@ namespace CircleDetect
             }
             return closerPoints;
         }
-
         public static float distance(Point po1, Point po2)
         {
             float resultadoX = po2.X - po1.X;
             float resultadoY = po2.Y - po1.Y;
-
             return resultadoX*resultadoX + resultadoY*resultadoY;
         }
     }

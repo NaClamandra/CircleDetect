@@ -5,18 +5,22 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace CircleDetect
-{
+{ 
     public class Grafo
     {
         Color White = Color.FromArgb(255, 255, 255, 255);
         List<Vertices> List_Vert;
+        public int numVert;
         public Grafo()
         {
             this.List_Vert = new List<Vertices>();
+            this.numVert = 1;
         }
         public void añadirVert(Vertices vertice)
         {
+            vertice.name = numVert.ToString();
             List_Vert.Add(vertice);
+            this.numVert += 1;
         }
         public class Arista
         {
@@ -30,14 +34,41 @@ namespace CircleDetect
         {
             public List<Arista> ListAr;
             public Point punto;
+            public string name;
             public Vertices(Point punto)
             {
                 this.ListAr = new List<Arista>();
                 this.punto = punto;
+                this.name = "";
             }
             public void añadeArista(Vertices vertice)
             {
                 this.ListAr.Add(new Arista(vertice));
+            }
+        }
+        public void matriz(DataGridView tablon)
+        {
+            int i = 0;
+            foreach (Vertices item in this.List_Vert)
+            {           
+                tablon.Columns.Add(item.name, item.name);
+                tablon.Columns[i].Width = 55;
+                tablon.Rows.Add();
+                tablon.Rows[i].HeaderCell.Value = item.name;
+                i++;
+            }
+            i = 0;
+            foreach (Vertices ver in this.List_Vert)
+            {
+                for (int j = 0; j < tablon.Columns.Count; j++)
+                {
+                    tablon.Rows[i].Cells[j].Value = 0;
+                }
+                foreach (Arista ari in ver.ListAr)
+                {
+                    tablon.Rows[i].Cells[tablon.Columns[ari.sig.name].Index].Value=1;
+                }
+                i++;
             }
         }
         public  bool bresenham(Bitmap bresen, Circulo circ1, Circulo circ2)
@@ -75,33 +106,38 @@ namespace CircleDetect
             }
             for (int i = 0; i < Circulos.Count; i++)
             {
-                for (int j = i + 1; j < Circulos.Count; j++)
+                for (int j = 0; j < Circulos.Count; j++)
                 {
-                    if (!bresenham((Bitmap)pic.Clone(),Circulos[i],Circulos[j]))
+                    if (i!=j)
                     {
-                        nwVert[i].añadeArista(nwVert[j]);
+                        if (!bresenham((Bitmap)pic.Clone(), Circulos[i], Circulos[j]))
+                        {
+                            nwVert[i].añadeArista(nwVert[j]);
+                        }
                     }
                 }
             }
             return nwVert;
         }
-        public void addVertice(Vertices Vertic)
-        {
-            List_Vert.Add(Vertic);
-        }
-
         public void mostrarGrafo(Bitmap clon)
         {
             Graphics g = Graphics.FromImage(clon);
-            Pen p = new Pen(Color.Yellow, 4);
+            Pen p = new Pen(Color.LightGreen, 4);
             foreach (Vertices item in List_Vert)
             {
                 foreach (Arista item2 in item.ListAr)
                 {
                     g.DrawLine(p, item.punto, item2.sig.punto);
-                }
+                }             
             }
-        }
+            foreach (Vertices item in List_Vert)
+            {
+                SolidBrush drawBrush = new SolidBrush(Color.OrangeRed);
+                StringFormat drawFormat = new StringFormat();
+                drawFormat.FormatFlags = StringFormatFlags.DirectionRightToLeft;
+                Font drawFont = new Font("Arial", 24);
+                g.DrawString(item.name, drawFont, drawBrush, item.punto.X, item.punto.Y, drawFormat);
+            }
+        }    
     }
-
 }
