@@ -106,13 +106,18 @@ namespace CircleDetect
             Grafo grafo = new Grafo();
             var img = (Bitmap)pictureBox1.Image;
             copia = (Bitmap)img.Clone();
+            Bitmap senal = new Bitmap(800, 200);
             copiaBresenham = (Bitmap)img.Clone();
             FindCirc((Bitmap)pictureBox1.Image);
             circulo = 0;
             listBox1.DataSource = null;
-            listBox1.DataSource = Circulos ;
+            listBox1.DataSource = Circulos;
             Pen otherPen = new Pen(Color.Yellow, 50);
             Graphics h = Graphics.FromImage(copia);
+            Graphics s = Graphics.FromImage(senal);
+            SolidBrush gray = new SolidBrush(Color.LightGray);
+            SolidBrush grn = new SolidBrush(Color.LightGreen);
+            SolidBrush blk = new SolidBrush(Color.Black);
             masCercanos = ButeForce.lista_p(Circulos);
             foreach (Grafo.Vertices item in grafo.calcularVertices(copia, Circulos))
             {
@@ -122,10 +127,21 @@ namespace CircleDetect
             {
                 foreach (var item in masCercanos)
                 {
-                    SolidBrush yellow = new SolidBrush(Color.LightGray);
-                    h.FillEllipse(yellow, item.puntoC.X - (item.radio/2), item.puntoC.Y-(item.radio / 2), item.radio, item.radio);
+                    
+                    h.FillEllipse(gray, item.puntoC.X - (item.radio/2), item.puntoC.Y-(item.radio / 2), item.radio, item.radio);
                 }
             }
+            SolidBrush drawBrush = new SolidBrush(Color.Black);
+            StringFormat drawFormat = new StringFormat();
+            drawFormat.FormatFlags = StringFormatFlags.DirectionRightToLeft;
+            Font drawFont = new Font("Arial", 15);
+            s.DrawString("Aristas", drawFont, drawBrush,120,5, drawFormat);
+            s.FillEllipse(grn, 20, 0, 30, 30);
+            s.DrawString("Puntos más cercanos", drawFont, drawBrush, 250, 45, drawFormat);
+            s.FillEllipse(gray, 20, 40, 30, 30);
+            s.DrawString("Vértices", drawFont, drawBrush, 130, 85, drawFormat);
+            s.FillEllipse(blk, 20, 80, 30, 30);
+            pictureBox2.Image = senal;
             grafo.mostrarGrafo(copia);
             grafo.matriz(dataGridView1); 
             button2.Enabled = false;

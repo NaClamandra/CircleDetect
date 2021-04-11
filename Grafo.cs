@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace CircleDetect
-{ 
+{
     public class Grafo
     {
         Color White = Color.FromArgb(255, 255, 255, 255);
