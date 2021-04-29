@@ -100,6 +100,7 @@ namespace CircleDetect
                 button2.Enabled = true;
             }
         }
+
         private void button2_Click(object sender, EventArgs e)
         {
             dataGridView1.Columns.Clear();
@@ -150,8 +151,24 @@ namespace CircleDetect
             masCercanos.Clear();
             foreach (Circulo item in Circulos)
             {
-                grafo.añadirVert(new Grafo.Vertices(item.puntoC));
+                grafo.añadirVert(new Grafo.Vertices(item.puntoC,item.radio,item.area));
             }
         }
+
+
+        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
+        {
+            Graphics g = Graphics.FromImage(copia);
+            //pictureBox3.Image = copia;
+            Color pixel = copia.GetPixel(e.X, e.Y);
+            if (pixel.R == pixel.G && pixel.B == pixel.R && pixel.R != 255)
+            {
+                // Grafo.Vertices VertClk = VertClk.
+                
+            }
+            MessageBox.Show(e.X.ToString() + e.Y.ToString());
+            MessageBox.Show(pixel.R.ToString() + pixel.G.ToString() + pixel.B.ToString());
+        }
+
     }
 }

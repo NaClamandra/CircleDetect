@@ -9,7 +9,7 @@ namespace CircleDetect
     public class Grafo
     {
         Color White = Color.FromArgb(255, 255, 255, 255);
-        List<Vertices> List_Vert;
+        public List<Vertices> List_Vert;
         public int numVert;
         public Grafo()
         {
@@ -25,9 +25,11 @@ namespace CircleDetect
         public class Arista
         {
             public Vertices sig;
-            public Arista(Vertices vertice)
+            public int peso;
+            public Arista(Vertices vertice, int peso)
             {
-                sig = vertice;
+                this.sig = vertice;
+                this.peso = peso;
             }
         }
         public class Vertices
@@ -35,22 +37,27 @@ namespace CircleDetect
             public List<Arista> ListAr;
             public Point punto;
             public string name;
-            public Vertices(Point punto)
+            public int radio;
+            public double area;
+
+            public Vertices(Point punto,int radio, double area, string id="")
             {
                 this.ListAr = new List<Arista>();
                 this.punto = punto;
-                this.name = "";
+                this.name = id;
+                this.radio = radio;
+                this.area = area;
             }
-            public void añadeArista(Vertices vertice)
+            public void añadeArista(Vertices vertice, int peso)
             {
-                this.ListAr.Add(new Arista(vertice));
+                this.ListAr.Add(new Arista(vertice,peso));
             }
         }
         public void matriz(DataGridView tablon)
         {
             int i = 0;
             foreach (Vertices item in this.List_Vert)
-            {           
+            {
                 tablon.Columns.Add(item.name, item.name);
                 tablon.Columns[i].Width = 55;
                 tablon.Rows.Add();
@@ -66,20 +73,20 @@ namespace CircleDetect
                 }
                 foreach (Arista ari in ver.ListAr)
                 {
-                    tablon.Rows[i].Cells[tablon.Columns[ari.sig.name].Index].Value=1;
+                    tablon.Rows[i].Cells[tablon.Columns[ari.sig.name].Index].Value = 1;
                 }
                 i++;
             }
         }
-        public  bool bresenham(Bitmap bresen, Circulo circ1, Circulo circ2)
+        public int bresenham(Bitmap bresen, Circulo circ1, Circulo circ2)
         {
+            int peso = 0;
             Graphics g = Graphics.FromImage(bresen);
             SolidBrush white = new SolidBrush(White);
             Color pixel;
             g.FillEllipse(white, circ1.puntoC.X - circ1.radio - 2, circ1.puntoC.Y - circ1.radio - 1, circ1.radio * 2 + 4, circ1.radio * 2 + 4);
             g.FillEllipse(white, circ2.puntoC.X - circ2.radio - 2, circ2.puntoC.Y - circ2.radio - 1, circ2.radio * 2 + 4, circ2.radio * 2 + 4);
             int x0 = circ1.puntoC.X, y0 = circ1.puntoC.Y, x1 = circ2.puntoC.X, y1 = circ2.puntoC.Y;
-            bool obstacle = false;
             int dx = Math.Abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
             int dy = Math.Abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
             int err = (dx > dy ? dx : -dy) / 2, e2;
@@ -88,31 +95,33 @@ namespace CircleDetect
                 pixel = bresen.GetPixel(x0, y0);
                 if (pixel.R != 255 || pixel.G != 255 || pixel.B != 255)
                 {
-                    obstacle = true;
+                    return -1;
                 }
                 if (x0 == x1 && y0 == y1) break;
                 e2 = err;
                 if (e2 > -dx) { err -= dy; x0 += sx; }
                 if (e2 < dy) { err += dx; y0 += sy; }
+                peso++;
             }
-            return obstacle;
+            return peso;
         }
         public List<Vertices> calcularVertices(Bitmap pic, List<Circulo> Circulos)
         {
             List<Vertices> nwVert = new List<Vertices>();
             foreach (Circulo item in Circulos)
             {
-                nwVert.Add(new Vertices(item.puntoC));
+                nwVert.Add(new Vertices(item.puntoC, item.radio, item.area));
             }
             for (int i = 0; i < Circulos.Count; i++)
             {
                 for (int j = 0; j < Circulos.Count; j++)
                 {
-                    if (i!=j)
+                    if (i != j)
                     {
-                        if (!bresenham((Bitmap)pic.Clone(), Circulos[i], Circulos[j]))
+                        int pesoAr = bresenham((Bitmap)pic.Clone(), Circulos[i], Circulos[j]);
+                        if (pesoAr>=0)
                         {
-                            nwVert[i].añadeArista(nwVert[j]);
+                            nwVert[i].añadeArista(nwVert[j], pesoAr);
                         }
                     }
                 }
@@ -121,6 +130,9 @@ namespace CircleDetect
         }
         public void mostrarGrafo(Bitmap clon)
         {
+            SolidBrush cola1 = new SolidBrush(Color.Red);
+            StringFormat cola = new StringFormat();
+            Font FF = new Font("Arial", 12);
             Graphics g = Graphics.FromImage(clon);
             Pen p = new Pen(Color.LightGreen, 4);
             foreach (Vertices item in List_Vert)
@@ -128,7 +140,8 @@ namespace CircleDetect
                 foreach (Arista item2 in item.ListAr)
                 {
                     g.DrawLine(p, item.punto, item2.sig.punto);
-                }             
+                    g.DrawString(item2.peso.ToString(), FF, cola1, (item.punto.X+item2.sig.punto.X)/2, (item.punto.Y + item2.sig.punto.Y) / 2);
+                }
             }
             foreach (Vertices item in List_Vert)
             {
@@ -138,6 +151,16 @@ namespace CircleDetect
                 Font drawFont = new Font("Arial", 24);
                 g.DrawString(item.name, drawFont, drawBrush, item.punto.X, item.punto.Y, drawFormat);
             }
-        }    
+        }
+        /*public List<Arista> ObtenerArista()
+        {
+            foreach (Vertices item in List_Vert)
+            {
+                foreach (Arista itemA in List_Vert)
+                {
+
+                }
+            }
+        }*/
     }
 }
