@@ -44,9 +44,10 @@ namespace CircleDetect
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(12, 31);
+            this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.pictureBox1.Location = new System.Drawing.Point(41, 27);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(899, 597);
+            this.pictureBox1.Size = new System.Drawing.Size(1123, 794);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
@@ -54,7 +55,7 @@ namespace CircleDetect
             // 
             // buttonBrowse
             // 
-            this.buttonBrowse.Location = new System.Drawing.Point(213, 634);
+            this.buttonBrowse.Location = new System.Drawing.Point(252, 895);
             this.buttonBrowse.Name = "buttonBrowse";
             this.buttonBrowse.Size = new System.Drawing.Size(75, 23);
             this.buttonBrowse.TabIndex = 1;
@@ -65,7 +66,7 @@ namespace CircleDetect
             // button2
             // 
             this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(684, 634);
+            this.button2.Location = new System.Drawing.Point(873, 895);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 2;
@@ -77,7 +78,7 @@ namespace CircleDetect
             // 
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 15;
-            this.listBox1.Location = new System.Drawing.Point(937, 66);
+            this.listBox1.Location = new System.Drawing.Point(1201, 64);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(335, 214);
             this.listBox1.TabIndex = 3;
@@ -85,7 +86,7 @@ namespace CircleDetect
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(1037, 31);
+            this.label2.Location = new System.Drawing.Point(1311, 27);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(128, 15);
             this.label2.TabIndex = 6;
@@ -98,7 +99,7 @@ namespace CircleDetect
             this.dataGridView1.AllowUserToResizeColumns = false;
             this.dataGridView1.AllowUserToResizeRows = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(937, 311);
+            this.dataGridView1.Location = new System.Drawing.Point(1181, 352);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowTemplate.Height = 25;
@@ -109,7 +110,7 @@ namespace CircleDetect
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1235, 293);
+            this.label1.Location = new System.Drawing.Point(1536, 314);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(114, 15);
             this.label1.TabIndex = 10;
@@ -117,7 +118,7 @@ namespace CircleDetect
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(1322, 102);
+            this.pictureBox2.Location = new System.Drawing.Point(1583, 97);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(266, 140);
             this.pictureBox2.TabIndex = 11;
@@ -129,7 +130,7 @@ namespace CircleDetect
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1691, 681);
+            this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.dataGridView1);
@@ -141,6 +142,7 @@ namespace CircleDetect
             this.Name = "Form_Principal";
             this.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Text = "Detectar Circulo";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
