@@ -16,6 +16,8 @@ namespace CircleDetect
         Color White = Color.FromArgb(255, 255, 255, 255);
         int circulo = 0;
         Grafo grafo = new Grafo();
+        ARM aPrim;
+        ARM aKruskal;
         Bitmap copia;
         List<Circulo> Circulos = new List<Circulo>();
         List<Point> puntC = new List<Point>();
@@ -93,6 +95,7 @@ namespace CircleDetect
         }
         private void buttonBrowse_Click(object sender, EventArgs e)
         {
+            grafo = new Grafo();
             eGrafo = false;
             pictureBox1.Size = new Size(1123,794);
             var ofd = new OpenFileDialog();
@@ -120,13 +123,13 @@ namespace CircleDetect
                 }
                 pictureBox1.Image = img_C;
                 copia = (Bitmap)img_C;
-                //pictureBox1.Enabled = false;
                 button2.Enabled = true;
             }
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            //pictureBox1.Enabled = true;
+            aKruskal = new ARM();
+            aPrim = new ARM();
             dataGridView1.Columns.Clear();
             var img = (Bitmap)pictureBox1.Image;
             copia = (Bitmap)img.Clone();
@@ -141,19 +144,19 @@ namespace CircleDetect
             SolidBrush gray = new SolidBrush(Color.LightGray);
             SolidBrush grn = new SolidBrush(Color.LightGreen);
             SolidBrush blk = new SolidBrush(Color.Black);
-            masCercanos = ButeForce.lista_p(Circulos);
+            //masCercanos = ButeForce.lista_p(Circulos);
             foreach (Grafo.Vertices item in grafo.calcularVertices(copia, Circulos))
             {
                 grafo.añadirVert(item);
             }  
-            if (masCercanos.Count == 2)
+            /*if (masCercanos.Count == 2)
             {
                 foreach (var item in masCercanos)
                 {
                     
                     h.FillEllipse(gray, item.puntoC.X - (item.radio/2), item.puntoC.Y-(item.radio / 2), item.radio, item.radio);
                 }
-            }
+            }*/
             SolidBrush drawBrush = new SolidBrush(Color.Black);
             StringFormat drawFormat = new StringFormat();
             drawFormat.FormatFlags = StringFormatFlags.DirectionRightToLeft;
@@ -167,15 +170,19 @@ namespace CircleDetect
             pictureBox2.Image = senal;
             eGrafo = true;
             grafo.mostrarGrafo(copia);
-            grafo.matriz(dataGridView1); 
-            button2.Enabled = false;
-            Circulos.Clear();
-            puntC.Clear();
-            masCercanos.Clear();
+            grafo.matriz(dataGridView1);
+            grafo.subGrafos();
             foreach (Circulo item in Circulos)
             {
                 grafo.añadirVert(new Grafo.Vertices(item.puntoC, item.radio, item.area));
             }
+
+            var grafoP = grafo;
+
+            button2.Enabled = false;
+            Circulos.Clear();
+            puntC.Clear();
+            masCercanos.Clear();
         }
         public static double Distancia(Point a, Point b)
         {
@@ -183,7 +190,7 @@ namespace CircleDetect
             float dY = b.Y - a.Y;
             return Math.Sqrt((dX*dX) + (dY*dY));
         }
-        public static Grafo.Vertices Pertenece(int x, int y, Grafo grafo, Bitmap im)
+        public Grafo.Vertices Pertenece(int x, int y, Bitmap im)
         {
             Grafo.Vertices vertEn = null;
             foreach (Grafo.Vertices item in grafo.List_Vert)
@@ -203,7 +210,7 @@ namespace CircleDetect
                 Color pixel = copia.GetPixel(e.X, e.Y);
                 if (pixel.R == pixel.G && pixel.B == pixel.R && pixel.R != 255)
                 {
-                    Grafo.Vertices VertClk = Pertenece(e.X, e.Y, grafo, copia);
+                    Grafo.Vertices VertClk = Pertenece(e.X, e.Y, copia);
                     MessageBox.Show(VertClk.name);
                 }
             }

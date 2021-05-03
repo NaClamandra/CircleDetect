@@ -11,10 +11,13 @@ namespace CircleDetect
         Color White = Color.FromArgb(255, 255, 255, 255);
         public List<Vertices> List_Vert;
         public int numVert;
+        public int nSubGrafo=1;
+        public List<List<Vertices>> LSubGrafos;
         public Grafo()
         {
             this.List_Vert = new List<Vertices>();
             this.numVert = 1;
+            this.nSubGrafo = 0;
         }
         public void añadirVert(Vertices vertice)
         {
@@ -32,6 +35,53 @@ namespace CircleDetect
                 this.peso = peso;
             }
         }
+        public void subGrafos()
+        {
+            this.nSubGrafo = 0;
+            foreach (Vertices Vertice in List_Vert)
+            {
+                List<Vertices> subgrafo = new List<Vertices>(); ;
+                if (Vertice.grupo == 0)
+                {
+                    this.nSubGrafo++; ;
+                    Vertice.grupo = nSubGrafo;
+                    foreach (Arista arista in Vertice.ListAr)
+                    {
+                        arista.sig.grupo = Vertice.grupo;
+                        subgrafo.Add(arista.sig);
+                    }
+                }
+                else
+                {
+                    foreach (Arista arista in Vertice.ListAr)
+                    {
+                        if (arista.sig.grupo == 0)
+                        {
+                            arista.sig.grupo = Vertice.grupo;
+                        }
+                    }
+                }
+            }
+            LSubGrafos = new List<List<Vertices>>();
+            for (int i = 0; i < nSubGrafo; i++)
+            {
+                LSubGrafos.Add(new List<Vertices>());
+            }
+            foreach (Vertices item in List_Vert)
+            {
+                LSubGrafos[item.grupo - 1].Add(item);
+            }
+            String hola = "";
+            foreach (var item in LSubGrafos)
+            {
+                foreach (var item2 in item)
+                {
+                    hola += item2.name + ',';
+                }
+                hola += "\n";
+            }
+            MessageBox.Show(hola);
+        }
         public class Vertices
         {
             public List<Arista> ListAr;
@@ -39,10 +89,11 @@ namespace CircleDetect
             public string name;
             public int radio;
             public double area;
-
+            public int grupo;
             public Vertices(Point punto,int radio, double area, string id="")
             {
                 this.ListAr = new List<Arista>();
+                this.grupo = 0;
                 this.punto = punto;
                 this.name = id;
                 this.radio = radio;

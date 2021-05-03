@@ -11,6 +11,7 @@ namespace CircleDetect
 {
     public class ButeForce
     {
+        /*
         public static List<Circulo> lista_p(List<Circulo> points)
         {
             List<Circulo> closerPoints = new List<Circulo>();
@@ -40,6 +41,6 @@ namespace CircleDetect
             float resultadoX = po2.X - po1.X;
             float resultadoY = po2.Y - po1.Y;
             return resultadoX*resultadoX + resultadoY*resultadoY;
-        }
+        }*/
     }
 }
