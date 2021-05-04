@@ -15,6 +15,7 @@ namespace CircleDetect
         Color Black = Color.FromArgb(255, 0, 0, 0);
         Color White = Color.FromArgb(255, 255, 255, 255);
         int circulo = 0;
+        int blanco = 1; 
         Grafo grafo = new Grafo();
         ARM aPrim;
         ARM aKruskal;
@@ -27,13 +28,25 @@ namespace CircleDetect
         {
             InitializeComponent();
         }
+
+        public bool Blanco(Color color)
+        {
+            if (color.R >= 255 - blanco && color.G >= 255 -blanco && color.B >= 255-blanco)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public void DetC(int j, int i, Bitmap img)
         {
             int pixelCount = 0, mitad, centro;
-            while (img.GetPixel(j, i) != White && j!=img.Width-1)
+
+            while (!Blanco(img.GetPixel(j, i)) && j!=img.Width-1)
             {
                 pixelCount += 1;
                 j++;
+
             }
             if (pixelCount % 2 != 0 && pixelCount != 0)
             {
@@ -46,7 +59,7 @@ namespace CircleDetect
                 mitad = j - pixelCount - 1;
             }
             pixelCount = 0;
-            while (img.GetPixel(mitad, i) != White && i != img.Height-1)
+            while (!Blanco(img.GetPixel(mitad, i)) && i != img.Height-1)
             {
                 pixelCount += 1;
                 i++;
@@ -84,7 +97,7 @@ namespace CircleDetect
                 for (int j = 0; j < w; j++)
                 {
                     bit = img.GetPixel(j, i);
-                    if (buscar && bit.R == bit.G && bit.B == bit.R && bit.R != 255)
+                    if (buscar && bit.R == bit.G && bit.B == bit.R && bit.R < 255-blanco)
                     {
                         DetC(j, i, img);
                         return FindCirc(img,i);      
@@ -140,45 +153,26 @@ namespace CircleDetect
             listBox1.DataSource = Circulos;
             Pen otherPen = new Pen(Color.Yellow, 50);
             Graphics h = Graphics.FromImage(copia);
-            Graphics s = Graphics.FromImage(senal);
             SolidBrush gray = new SolidBrush(Color.LightGray);
             SolidBrush grn = new SolidBrush(Color.LightGreen);
             SolidBrush blk = new SolidBrush(Color.Black);
-            //masCercanos = ButeForce.lista_p(Circulos);
             foreach (Grafo.Vertices item in grafo.calcularVertices(copia, Circulos))
             {
                 grafo.añadirVert(item);
             }  
-            /*if (masCercanos.Count == 2)
-            {
-                foreach (var item in masCercanos)
-                {
-                    
-                    h.FillEllipse(gray, item.puntoC.X - (item.radio/2), item.puntoC.Y-(item.radio / 2), item.radio, item.radio);
-                }
-            }*/
             SolidBrush drawBrush = new SolidBrush(Color.Black);
             StringFormat drawFormat = new StringFormat();
             drawFormat.FormatFlags = StringFormatFlags.DirectionRightToLeft;
             Font drawFont = new Font("Arial", 15);
-            s.DrawString("Aristas", drawFont, drawBrush,120,5, drawFormat);
-            s.FillEllipse(grn, 20, 0, 30, 30);
-            s.DrawString("Puntos más cercanos", drawFont, drawBrush, 250, 45, drawFormat);
-            s.FillEllipse(gray, 20, 40, 30, 30);
-            s.DrawString("Vértices", drawFont, drawBrush, 130, 85, drawFormat);
-            s.FillEllipse(blk, 20, 80, 30, 30);
-            pictureBox2.Image = senal;
             eGrafo = true;
+            grafo.subGrafos();
             grafo.mostrarGrafo(copia);
             grafo.matriz(dataGridView1);
-            grafo.subGrafos();
             foreach (Circulo item in Circulos)
             {
                 grafo.añadirVert(new Grafo.Vertices(item.puntoC, item.radio, item.area));
             }
-
             var grafoP = grafo;
-
             button2.Enabled = false;
             Circulos.Clear();
             puntC.Clear();
@@ -215,6 +209,5 @@ namespace CircleDetect
                 }
             }
         }
-
     }
 }

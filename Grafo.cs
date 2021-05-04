@@ -17,7 +17,7 @@ namespace CircleDetect
         {
             this.List_Vert = new List<Vertices>();
             this.numVert = 1;
-            this.nSubGrafo = 0;
+            this.nSubGrafo = 1;
         }
         public void añadirVert(Vertices vertice)
         {
@@ -38,27 +38,30 @@ namespace CircleDetect
         public void subGrafos()
         {
             this.nSubGrafo = 0;
+            List<Vertices> verticeCola = new  List<Vertices>();
             foreach (Vertices Vertice in List_Vert)
             {
-                List<Vertices> subgrafo = new List<Vertices>(); ;
                 if (Vertice.grupo == 0)
                 {
-                    this.nSubGrafo++; ;
+                    verticeCola.Add(Vertice);
+                    this.nSubGrafo++;
                     Vertice.grupo = nSubGrafo;
-                    foreach (Arista arista in Vertice.ListAr)
+                    Vertices padreVer = Vertice;
+
+                    while( verticeCola.Count > 0)
                     {
-                        arista.sig.grupo = Vertice.grupo;
-                        subgrafo.Add(arista.sig);
-                    }
-                }
-                else
-                {
-                    foreach (Arista arista in Vertice.ListAr)
-                    {
-                        if (arista.sig.grupo == 0)
+                        if (verticeCola[0].grupo == 0)
                         {
-                            arista.sig.grupo = Vertice.grupo;
+                            verticeCola[0].grupo = nSubGrafo;
                         }
+                        foreach (Arista arista in verticeCola[0].ListAr)
+                        {
+                            if (arista.sig.grupo == 0)
+                            {
+                                verticeCola.Add(arista.sig);
+                            }
+                        }
+                        verticeCola.RemoveAt(0);
                     }
                 }
             }
@@ -72,15 +75,14 @@ namespace CircleDetect
                 LSubGrafos[item.grupo - 1].Add(item);
             }
             String hola = "";
-            foreach (var item in LSubGrafos)
+            foreach (var item3 in LSubGrafos)
             {
-                foreach (var item2 in item)
+                foreach (var item2 in item3)
                 {
                     hola += item2.name + ',';
                 }
                 hola += "\n";
             }
-            MessageBox.Show(hola);
         }
         public class Vertices
         {
@@ -202,16 +204,10 @@ namespace CircleDetect
                 Font drawFont = new Font("Arial", 24);
                 g.DrawString(item.name, drawFont, drawBrush, item.punto.X, item.punto.Y, drawFormat);
             }
-        }
-        /*public List<Arista> ObtenerArista()
-        {
-            foreach (Vertices item in List_Vert)
+            foreach (Vertices vert in List_Vert)
             {
-                foreach (Arista itemA in List_Vert)
-                {
-
-                }
+                g.DrawString("g:" + vert.grupo.ToString(), FF, cola1, vert.punto.X - 10, vert.punto.Y - 10);
             }
-        }*/
+        }
     }
 }
