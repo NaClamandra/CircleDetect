@@ -121,7 +121,6 @@ namespace CircleDetect
                     float scale;
                     float ScaWi = (float)pictureBox1.Width / (float)img_C.Width;
                     float ScaHe = (float)pictureBox1.Height / (float)img_C.Height;
-                    //img_C = new Bitmap(img_C, new Size(pictureBox1.Width, pictureBox1.Height));
                     if (ScaWi < ScaHe)
                     {
                         scale = ScaWi;
@@ -202,10 +201,44 @@ namespace CircleDetect
             {
                 Graphics g = Graphics.FromImage(copia);
                 Color pixel = copia.GetPixel(e.X, e.Y);
-                if (pixel.R == pixel.G && pixel.B == pixel.R && pixel.R != 255)
+                Grafo.Vertices VertClk = Pertenece(e.X, e.Y, copia);
+                //List<Tuple<String, Grafo.Arista>> tuplaAr = new List<Tuple<string, Grafo.Arista>>();
+                if (VertClk!=null)
                 {
-                    Grafo.Vertices VertClk = Pertenece(e.X, e.Y, copia);
-                    MessageBox.Show(VertClk.name);
+                    foreach (Grafo.Vertices itemV in grafo.LSubGrafos[VertClk.grupo-1])
+                    {
+                        aPrim.agregarVTree(new Grafo.Vertices(itemV.punto, itemV.radio, itemV.area, itemV.name));
+                    }
+                    List<string> visitado = new List<string>();
+                    List<Grafo.Arista> arCola = new List<Grafo.Arista>();
+                    Grafo.Vertices vertices = VertClk;
+                    foreach (Grafo.Arista itemA in VertClk.ListAr)
+                    {
+                        //tuplaAr.Add(new Tuple<string, Grafo.Arista>(VertClk.name, itemA));
+                        arCola.Add(itemA);
+                    }
+                    visitado.Add(VertClk.name);
+                    Grafo.Arista minAr;
+                    while (arCola.Count>0)
+                    {
+                        minAr = grafo.MinArista(arCola);
+                        if (!visitado.Contains(minAr.sig.name))
+                        {
+                            aPrim.encuentraV(minAr.verId).ListAr.Add(new Grafo.Arista(minAr.sig, minAr.peso));
+                            vertices.ListAr.Add(minAr);
+                            visitado.Add(minAr.sig.name);
+                            foreach (Grafo.Arista ari in minAr.sig.ListAr)
+                            {
+                                if (!visitado.Contains(ari.sig.name))
+                                {
+                                    arCola.Add(ari);
+                                }
+                            }
+                        }
+                        arCola.Remove(minAr);
+                    }
+                    aPrim.mostrarTree(copia);
+                    pictureBox1.Image = copia;
                 }
             }
         }

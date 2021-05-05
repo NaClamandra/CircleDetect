@@ -23,16 +23,22 @@ namespace CircleDetect
         {
             vertice.name = numVert.ToString();
             List_Vert.Add(vertice);
+            foreach (Arista item in vertice.ListAr)
+            {
+                item.verId = vertice.name;
+            }
             this.numVert += 1;
         }
         public class Arista
         {
             public Vertices sig;
+            public string verId;
             public int peso;
-            public Arista(Vertices vertice, int peso)
+            public Arista(Vertices vertice, int peso, string id="")
             {
                 this.sig = vertice;
                 this.peso = peso;
+                this.verId = id;
             }
         }
         public void subGrafos()
@@ -106,6 +112,20 @@ namespace CircleDetect
                 this.ListAr.Add(new Arista(vertice,peso));
             }
         }
+        public Arista MinArista(List<Arista> aristas)
+        {
+            Arista Min = aristas[0];
+            foreach (Arista itemA in aristas)
+            {
+                if (Min.peso>itemA.peso)
+                {
+                    Min = itemA;
+                }
+            }
+            return Min;
+        }
+
+
         public void matriz(DataGridView tablon)
         {
             int i = 0;
