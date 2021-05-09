@@ -178,6 +178,12 @@ namespace CircleDetect
             }
             return peso;
         }
+        public double Distancia(Point a, Point b)
+        {
+            float dX = b.X - a.X;
+            float dY = b.Y - a.Y;
+            return Math.Sqrt((dX * dX) + (dY * dY));
+        }
         public List<Vertices> calcularVertices(Bitmap pic, List<Circulo> Circulos)
         {
             List<Vertices> nwVert = new List<Vertices>();
@@ -194,6 +200,7 @@ namespace CircleDetect
                         int pesoAr = bresenham((Bitmap)pic.Clone(), Circulos[i], Circulos[j]);
                         if (pesoAr>=0)
                         {
+                            pesoAr = (int)Distancia(nwVert[j].punto, nwVert[i].punto);
                             nwVert[i].añadeArista(nwVert[j], pesoAr);
                         }
                     }
@@ -213,7 +220,7 @@ namespace CircleDetect
                 foreach (Arista item2 in item.ListAr)
                 {
                     g.DrawLine(p, item.punto, item2.sig.punto);
-                    g.DrawString(item2.peso.ToString(), FF, cola1, (item.punto.X+item2.sig.punto.X)/2, (item.punto.Y + item2.sig.punto.Y) / 2);
+                    //g.DrawString(item2.peso.ToString(), FF, cola1, (item.punto.X+item2.sig.punto.X)/2, (item.punto.Y + item2.sig.punto.Y) / 2);
                 }
             }
             foreach (Vertices item in List_Vert)
@@ -226,8 +233,92 @@ namespace CircleDetect
             }
             foreach (Vertices vert in List_Vert)
             {
-                g.DrawString("g:" + vert.grupo.ToString(), FF, cola1, vert.punto.X - 10, vert.punto.Y - 10);
+                //g.DrawString("g:" + vert.grupo.ToString(), FF, cola1, vert.punto.X - 10, vert.punto.Y - 10);
             }
+        }
+
+        public static bool enArbol(List<ARM> arbol, Vertices vertice)
+        {
+            foreach (var item in arbol)
+            {
+                foreach (Vertices ver in item.vertices)
+                {
+                    if (ver.name == vertice.name)
+                    {
+                        return true;
+                    }
+                }
+            } 
+            return false;
+        }
+        public ARM Kruscal(ARM arm, List<Vertices> sGrafo)
+        {
+                List<Vertices> visitados = new List<Vertices>();
+                Arista minAr;
+                List<Arista> candidato = new List<Arista>();
+                List<Arista> promete = new List<Arista>();
+                List<string> visited = new List<string>();
+                List<List<Vertices>> cc = new List<List<Vertices>>();
+                foreach (Vertices vertice in sGrafo)
+                {
+                    //var nuevoV = new Vertices(itemV.punto, itemV.radio, itemV.area, itemV.name);
+                    arm.agregarVTree(new Vertices(vertice.punto,vertice.radio, vertice.area, vertice.name));
+                    List<Vertices> conexo = new List<Vertices>();
+                    conexo.Add(vertice);
+                    cc.Add(conexo);
+                    foreach (Arista itemA in vertice.ListAr)
+                    {
+                        if (!visitados.Contains(itemA.sig))
+                        {
+                            candidato.Add(itemA);
+                        }
+                    }
+                    visitados.Add(vertice);
+                }
+                while (cc.Count != 1)
+                {
+                    minAr = MinArista(candidato);
+                    var c_1 = findVerticeCC(cc, findVertList(sGrafo, minAr.verId));
+                    var c_2 = findVerticeCC(cc, minAr.sig);
+                    if (c_1 != c_2)
+                    {
+                        List<Vertices> newcc = new List<Vertices>();
+                        c_1.AddRange(c_2);
+                        cc.Remove(c_2);
+                        promete.Add(minAr);
+                        arm.encuentraV(minAr.verId).ListAr.Add(new Grafo.Arista(minAr.sig, minAr.peso));
+                    }
+
+                    candidato.Remove(minAr);
+                }
+                arm.ordenA = promete;
+                return arm;
+
+        }
+        public static Vertices findVertList(List<Vertices>lista, string id)
+        {
+            foreach (var Vert in lista)
+            {
+                if (Vert.name==id)
+                {
+                    return Vert;
+                }
+            }
+            return null;
+        }
+        public static List<Vertices> findVerticeCC(List<List<Vertices>> CCs, Vertices vertice)
+        {
+            foreach (List<Vertices> item in CCs)
+            {
+                foreach (Vertices itemV in item)
+                {
+                    if (itemV==vertice)
+                    {
+                        return item;
+                    }
+                }
+            }
+            return null;
         }
     }
 }

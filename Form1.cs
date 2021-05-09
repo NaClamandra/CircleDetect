@@ -17,9 +17,11 @@ namespace CircleDetect
         int circulo = 0;
         int blanco = 1; 
         Grafo grafo = new Grafo();
-        ARM aPrim;
-        ARM aKruskal;
+        List<ARM> aPrim;
+        List<ARM> aKruskal;
         Bitmap copia;
+        Bitmap prim;
+        Bitmap kruskal;
         List<Circulo> Circulos = new List<Circulo>();
         List<Point> puntC = new List<Point>();
         List<Circulo> masCercanos = new List<Circulo>();
@@ -115,6 +117,9 @@ namespace CircleDetect
             ofd.Filter = "Archivos de imagen|*.jpg;*.png";
             if (ofd.ShowDialog()==DialogResult.OK)
             {
+                b_prim.Enabled = false;
+                b_grafo.Enabled = false;
+                b_kruskal.Enabled = false;
                 var img_C = Image.FromFile(ofd.FileName);
                 if (img_C.Width>pictureBox1.Width || img_C.Height>pictureBox1.Height)
                 {
@@ -135,13 +140,16 @@ namespace CircleDetect
                 }
                 pictureBox1.Image = img_C;
                 copia = (Bitmap)img_C;
+                kruskal = (Bitmap)copia.Clone();
+                prim = (Bitmap)copia.Clone();
                 button2.Enabled = true;
             }
         }
+
         private void button2_Click(object sender, EventArgs e)
         {
-            aKruskal = new ARM();
-            aPrim = new ARM();
+            aKruskal = new List<ARM>();
+            aPrim = new List<ARM>();
             dataGridView1.Columns.Clear();
             var img = (Bitmap)pictureBox1.Image;
             copia = (Bitmap)img.Clone();
@@ -167,6 +175,18 @@ namespace CircleDetect
             grafo.subGrafos();
             grafo.mostrarGrafo(copia);
             grafo.matriz(dataGridView1);
+
+            foreach (var subGraph in grafo.LSubGrafos)
+            {
+                var nwKruskal = new ARM();
+                aKruskal.Add(grafo.Kruscal(nwKruskal, subGraph));             
+            }
+
+            foreach (var a_kruskal in aKruskal)
+            {
+                a_kruskal.mostrarTree(kruskal);
+            }
+
             foreach (Circulo item in Circulos)
             {
                 grafo.añadirVert(new Grafo.Vertices(item.puntoC, item.radio, item.area));
@@ -176,19 +196,18 @@ namespace CircleDetect
             Circulos.Clear();
             puntC.Clear();
             masCercanos.Clear();
+            b_grafo.Enabled = true;
+            b_kruskal.Enabled = true;
+            b_prim.Enabled = true;
         }
-        public static double Distancia(Point a, Point b)
-        {
-            float dX = b.X - a.X;
-            float dY = b.Y - a.Y;
-            return Math.Sqrt((dX*dX) + (dY*dY));
-        }
+
+        
         public Grafo.Vertices Pertenece(int x, int y, Bitmap im)
         {
             Grafo.Vertices vertEn = null;
             foreach (Grafo.Vertices item in grafo.List_Vert)
             {
-                if(Distancia(new Point(x, y), item.punto)-item.radio<0)
+                if(grafo.Distancia(new Point(x, y), item.punto)-item.radio<0)
                 {
                     return item;
                 }
@@ -203,12 +222,15 @@ namespace CircleDetect
                 Color pixel = copia.GetPixel(e.X, e.Y);
                 Grafo.Vertices VertClk = Pertenece(e.X, e.Y, copia);
                 //List<Tuple<String, Grafo.Arista>> tuplaAr = new List<Tuple<string, Grafo.Arista>>();
-                if (VertClk!=null)
+                ARM nwprim = new ARM();
+                if (VertClk!=null && !Grafo.enArbol(aPrim,VertClk))
                 {
+
                     foreach (Grafo.Vertices itemV in grafo.LSubGrafos[VertClk.grupo-1])
                     {
-                        aPrim.agregarVTree(new Grafo.Vertices(itemV.punto, itemV.radio, itemV.area, itemV.name));
+                        nwprim.agregarVTree(new Grafo.Vertices(itemV.punto, itemV.radio, itemV.area, itemV.name));
                     }
+                    List<Grafo.Arista> promete = new List<Grafo.Arista>();
                     List<string> visitado = new List<string>();
                     List<Grafo.Arista> arCola = new List<Grafo.Arista>();
                     Grafo.Vertices vertices = VertClk;
@@ -224,8 +246,8 @@ namespace CircleDetect
                         minAr = grafo.MinArista(arCola);
                         if (!visitado.Contains(minAr.sig.name))
                         {
-                            aPrim.encuentraV(minAr.verId).ListAr.Add(new Grafo.Arista(minAr.sig, minAr.peso));
-                            vertices.ListAr.Add(minAr);
+                            nwprim.encuentraV(minAr.verId).ListAr.Add(new Grafo.Arista(minAr.sig, minAr.peso));
+                            promete.Add(minAr);
                             visitado.Add(minAr.sig.name);
                             foreach (Grafo.Arista ari in minAr.sig.ListAr)
                             {
@@ -237,10 +259,38 @@ namespace CircleDetect
                         }
                         arCola.Remove(minAr);
                     }
-                    aPrim.mostrarTree(copia);
-                    pictureBox1.Image = copia;
+                    nwprim.ordenA = promete;
+                    aPrim.Add(nwprim);
+                    nwprim.mostrarTree(prim);
+                    pictureBox1.Image = prim;
+                    b_prim.Enabled = false;
+                    b_kruskal.Enabled = true;
                 }
             }
+        }
+
+        private void b_kruskal_Click(object sender, EventArgs e)
+        {
+            pictureBox1.Image = kruskal;
+            b_kruskal.Enabled = false;
+            b_prim.Enabled = true;
+            b_grafo.Enabled = true;
+        }
+
+        private void b_prim_Click(object sender, EventArgs e)
+        {
+            pictureBox1.Image = prim;
+            b_kruskal.Enabled = true;
+            b_prim.Enabled = false;
+            b_grafo.Enabled = true;
+        }
+
+        private void b_grafo_Click(object sender, EventArgs e)
+        {
+            pictureBox1.Image = copia;
+            b_prim.Enabled = true;
+            b_kruskal.Enabled = true;
+            b_grafo.Enabled = false;
         }
     }
 }

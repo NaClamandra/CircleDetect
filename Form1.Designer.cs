@@ -37,6 +37,9 @@ namespace CircleDetect
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.b_prim = new System.Windows.Forms.Button();
+            this.b_kruskal = new System.Windows.Forms.Button();
+            this.b_grafo = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -125,6 +128,39 @@ namespace CircleDetect
             this.pictureBox2.TabIndex = 11;
             this.pictureBox2.TabStop = false;
             // 
+            // b_prim
+            // 
+            this.b_prim.Enabled = false;
+            this.b_prim.Location = new System.Drawing.Point(1201, 798);
+            this.b_prim.Name = "b_prim";
+            this.b_prim.Size = new System.Drawing.Size(185, 23);
+            this.b_prim.TabIndex = 12;
+            this.b_prim.Text = "Ver ARM Prim";
+            this.b_prim.UseVisualStyleBackColor = true;
+            this.b_prim.Click += new System.EventHandler(this.b_prim_Click);
+            // 
+            // b_kruskal
+            // 
+            this.b_kruskal.Enabled = false;
+            this.b_kruskal.Location = new System.Drawing.Point(1486, 798);
+            this.b_kruskal.Name = "b_kruskal";
+            this.b_kruskal.Size = new System.Drawing.Size(178, 23);
+            this.b_kruskal.TabIndex = 13;
+            this.b_kruskal.Text = "Ver ARM Kruskal";
+            this.b_kruskal.UseVisualStyleBackColor = true;
+            this.b_kruskal.Click += new System.EventHandler(this.b_kruskal_Click);
+            // 
+            // b_grafo
+            // 
+            this.b_grafo.Enabled = false;
+            this.b_grafo.Location = new System.Drawing.Point(1364, 877);
+            this.b_grafo.Name = "b_grafo";
+            this.b_grafo.Size = new System.Drawing.Size(146, 41);
+            this.b_grafo.TabIndex = 14;
+            this.b_grafo.Text = "Ver Grafo";
+            this.b_grafo.UseVisualStyleBackColor = true;
+            this.b_grafo.Click += new System.EventHandler(this.b_grafo_Click);
+            // 
             // Form_Principal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -132,6 +168,9 @@ namespace CircleDetect
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.Controls.Add(this.b_grafo);
+            this.Controls.Add(this.b_kruskal);
+            this.Controls.Add(this.b_prim);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.dataGridView1);
@@ -162,6 +201,9 @@ namespace CircleDetect
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Button b_prim;
+        private System.Windows.Forms.Button b_kruskal;
+        private System.Windows.Forms.Button b_grafo;
     }
 }
 
