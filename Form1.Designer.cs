@@ -34,15 +34,20 @@ namespace CircleDetect
             this.button2 = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.label1 = new System.Windows.Forms.Label();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.b_prim = new System.Windows.Forms.Button();
             this.b_kruskal = new System.Windows.Forms.Button();
             this.b_grafo = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.Prim_n = new System.Windows.Forms.Label();
+            this.Kruskaln = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.sGrafos = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.listBox2 = new System.Windows.Forms.ListBox();
+            this.listBox3 = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -95,39 +100,6 @@ namespace CircleDetect
             this.label2.TabIndex = 6;
             this.label2.Text = "Orden por ID (Original)";
             // 
-            // dataGridView1
-            // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.AllowUserToResizeColumns = false;
-            this.dataGridView1.AllowUserToResizeRows = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(1181, 352);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowTemplate.Height = 25;
-            this.dataGridView1.Size = new System.Drawing.Size(731, 317);
-            this.dataGridView1.TabIndex = 9;
-            this.dataGridView1.TabStop = false;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1536, 314);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(114, 15);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "Matiz de adyacencia";
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Location = new System.Drawing.Point(1583, 97);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(266, 140);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox2.TabIndex = 11;
-            this.pictureBox2.TabStop = false;
-            // 
             // b_prim
             // 
             this.b_prim.Enabled = false;
@@ -161,6 +133,93 @@ namespace CircleDetect
             this.b_grafo.UseVisualStyleBackColor = true;
             this.b_grafo.Click += new System.EventHandler(this.b_grafo_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(1201, 647);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(94, 15);
+            this.label3.TabIndex = 15;
+            this.label3.Text = "Arboles de Prim:";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(1201, 678);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(107, 15);
+            this.label1.TabIndex = 16;
+            this.label1.Text = "Arboles de Kruskal:";
+            // 
+            // Prim_n
+            // 
+            this.Prim_n.AutoSize = true;
+            this.Prim_n.Location = new System.Drawing.Point(1311, 647);
+            this.Prim_n.Name = "Prim_n";
+            this.Prim_n.Size = new System.Drawing.Size(0, 15);
+            this.Prim_n.TabIndex = 17;
+            // 
+            // Kruskaln
+            // 
+            this.Kruskaln.AutoSize = true;
+            this.Kruskaln.Location = new System.Drawing.Point(1314, 678);
+            this.Kruskaln.Name = "Kruskaln";
+            this.Kruskaln.Size = new System.Drawing.Size(0, 15);
+            this.Kruskaln.TabIndex = 18;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(1201, 712);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(112, 15);
+            this.label4.TabIndex = 19;
+            this.label4.Text = "Subgrafos Conexos:";
+            // 
+            // sGrafos
+            // 
+            this.sGrafos.AutoSize = true;
+            this.sGrafos.Location = new System.Drawing.Point(1319, 712);
+            this.sGrafos.Name = "sGrafos";
+            this.sGrafos.Size = new System.Drawing.Size(0, 15);
+            this.sGrafos.TabIndex = 20;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(1274, 329);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(88, 15);
+            this.label5.TabIndex = 23;
+            this.label5.Text = "Arboles Kruskal";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(1698, 329);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(75, 15);
+            this.label6.TabIndex = 24;
+            this.label6.Text = "Arboles Prim";
+            // 
+            // listBox2
+            // 
+            this.listBox2.FormattingEnabled = true;
+            this.listBox2.ItemHeight = 15;
+            this.listBox2.Location = new System.Drawing.Point(1201, 352);
+            this.listBox2.Name = "listBox2";
+            this.listBox2.Size = new System.Drawing.Size(238, 184);
+            this.listBox2.TabIndex = 25;
+            // 
+            // listBox3
+            // 
+            this.listBox3.FormattingEnabled = true;
+            this.listBox3.ItemHeight = 15;
+            this.listBox3.Location = new System.Drawing.Point(1625, 352);
+            this.listBox3.Name = "listBox3";
+            this.listBox3.Size = new System.Drawing.Size(238, 184);
+            this.listBox3.TabIndex = 26;
+            // 
             // Form_Principal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -168,12 +227,19 @@ namespace CircleDetect
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.Controls.Add(this.listBox3);
+            this.Controls.Add(this.listBox2);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.sGrafos);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.Kruskaln);
+            this.Controls.Add(this.Prim_n);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.b_grafo);
             this.Controls.Add(this.b_kruskal);
             this.Controls.Add(this.b_prim);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.button2);
@@ -184,8 +250,6 @@ namespace CircleDetect
             this.Text = "Detectar Circulo";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -198,12 +262,19 @@ namespace CircleDetect
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Button b_prim;
         private System.Windows.Forms.Button b_kruskal;
         private System.Windows.Forms.Button b_grafo;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label Prim_n;
+        private System.Windows.Forms.Label Kruskaln;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label sGrafos;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ListBox listBox2;
+        private System.Windows.Forms.ListBox listBox3;
     }
 }
 
