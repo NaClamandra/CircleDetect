@@ -19,6 +19,8 @@ namespace CircleDetect
         Grafo grafo = new Grafo();
         List<ARM> aPrim;
         List<ARM> aKruskal;
+        ARM KruskalPulsado;
+        ARM PrimPulsado;
         Bitmap copia;
         Bitmap prim;
         Bitmap kruskal;
@@ -30,7 +32,6 @@ namespace CircleDetect
         {
             InitializeComponent();
         }
-
         public bool Blanco(Color color)
         {
             if (color.R >= 255 - blanco && color.G >= 255 -blanco && color.B >= 255-blanco)
@@ -39,7 +40,6 @@ namespace CircleDetect
             }
             return false;
         }
-
         public void DetC(int j, int i, Bitmap img)
         {
             int pixelCount = 0, mitad, centro;
@@ -120,24 +120,13 @@ namespace CircleDetect
                 b_prim.Enabled = false;
                 b_grafo.Enabled = false;
                 b_kruskal.Enabled = false;
-                var img_C = Image.FromFile(ofd.FileName);
-                if (img_C.Width>pictureBox1.Width || img_C.Height>pictureBox1.Height)
-                {
-                    float scale;
-                    float ScaWi = (float)pictureBox1.Width / (float)img_C.Width;
-                    float ScaHe = (float)pictureBox1.Height / (float)img_C.Height;
-                    if (ScaWi < ScaHe)
-                    {
-                        scale = ScaWi;
-                    }
-                    else
-                    {
-                        scale = ScaHe;
-                    }
-                    var sW = (int)(img_C.Width * scale);
-                    var sH = (int)(img_C.Height * scale);
-                    img_C = new Bitmap(img_C, new Size(sW, sH));
-                }
+                Kruskaln.Text = "";
+                sGrafos.Text = "";
+                Prim_n.Text = "";
+                listBox2.DataSource = null;
+                listBox3.DataSource = null;
+                var img_C = new Bitmap(Image.FromFile(ofd.FileName));
+                img_C = grafo.escalaImg(pictureBox1, img_C);
                 pictureBox1.Image = img_C;
                 copia = (Bitmap)img_C;
                 kruskal = (Bitmap)copia.Clone();
@@ -145,12 +134,11 @@ namespace CircleDetect
                 button2.Enabled = true;
             }
         }
-
         private void button2_Click(object sender, EventArgs e)
         {
             aKruskal = new List<ARM>();
             aPrim = new List<ARM>();
-            dataGridView1.Columns.Clear();
+            //dataGridView1.Columns.Clear();
             var img = (Bitmap)pictureBox1.Image;
             copia = (Bitmap)img.Clone();
             Bitmap senal = new Bitmap(800, 200);;
@@ -166,15 +154,19 @@ namespace CircleDetect
             foreach (Grafo.Vertices item in grafo.calcularVertices(copia, Circulos))
             {
                 grafo.añadirVert(item);
+               
+                
             }  
             SolidBrush drawBrush = new SolidBrush(Color.Black);
             StringFormat drawFormat = new StringFormat();
             drawFormat.FormatFlags = StringFormatFlags.DirectionRightToLeft;
             Font drawFont = new Font("Arial", 15);
             eGrafo = true;
+
+
             grafo.subGrafos();
             grafo.mostrarGrafo(copia);
-            grafo.matriz(dataGridView1);
+            //grafo.matriz(dataGridView1);
 
             foreach (var subGraph in grafo.LSubGrafos)
             {
@@ -185,6 +177,7 @@ namespace CircleDetect
             foreach (var a_kruskal in aKruskal)
             {
                 a_kruskal.mostrarTree(kruskal);
+                a_kruskal.treePeso();
             }
 
             foreach (Circulo item in Circulos)
@@ -193,6 +186,12 @@ namespace CircleDetect
             }
             var grafoP = grafo;
             button2.Enabled = false;
+            Kruskaln.Text = grafo.LSubGrafos.Count.ToString();
+            sGrafos.Text = grafo.LSubGrafos.Count.ToString();
+
+            listBox2.DataSource = null;
+            listBox2.DataSource = aKruskal;
+
             Circulos.Clear();
             puntC.Clear();
             masCercanos.Clear();
@@ -200,8 +199,6 @@ namespace CircleDetect
             b_kruskal.Enabled = true;
             b_prim.Enabled = true;
         }
-
-        
         public Grafo.Vertices Pertenece(int x, int y, Bitmap im)
         {
             Grafo.Vertices vertEn = null;
@@ -225,10 +222,11 @@ namespace CircleDetect
                 ARM nwprim = new ARM();
                 if (VertClk!=null && !Grafo.enArbol(aPrim,VertClk))
                 {
-
                     foreach (Grafo.Vertices itemV in grafo.LSubGrafos[VertClk.grupo-1])
                     {
-                        nwprim.agregarVTree(new Grafo.Vertices(itemV.punto, itemV.radio, itemV.area, itemV.name));
+                        var nwVert = new Grafo.Vertices(itemV.punto, itemV.radio, itemV.area, itemV.name);
+                        nwVert.grupo = itemV.grupo;
+                        nwprim.agregarVTree(nwVert);
                     }
                     List<Grafo.Arista> promete = new List<Grafo.Arista>();
                     List<string> visitado = new List<string>();
@@ -261,11 +259,15 @@ namespace CircleDetect
                     }
                     nwprim.ordenA = promete;
                     aPrim.Add(nwprim);
+                    nwprim.treePeso();
+                    listBox3.DataSource = null;
+                    listBox3.DataSource = aPrim.OrderBy(o=>o.vertices[0].grupo).ToList();
                     nwprim.mostrarTree(prim);
                     pictureBox1.Image = prim;
                     b_prim.Enabled = false;
                     b_kruskal.Enabled = true;
                 }
+                Prim_n.Text = aPrim.Count.ToString();
             }
         }
 

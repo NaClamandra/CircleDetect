@@ -124,8 +124,6 @@ namespace CircleDetect
             }
             return Min;
         }
-
-
         public void matriz(DataGridView tablon)
         {
             int i = 0;
@@ -236,7 +234,6 @@ namespace CircleDetect
                 //g.DrawString("g:" + vert.grupo.ToString(), FF, cola1, vert.punto.X - 10, vert.punto.Y - 10);
             }
         }
-
         public static bool enArbol(List<ARM> arbol, Vertices vertice)
         {
             foreach (var item in arbol)
@@ -261,8 +258,10 @@ namespace CircleDetect
                 List<List<Vertices>> cc = new List<List<Vertices>>();
                 foreach (Vertices vertice in sGrafo)
                 {
+                    var nwrVert = new Vertices(vertice.punto, vertice.radio, vertice.area, vertice.name);
+                    nwrVert.grupo = vertice.grupo;
                     //var nuevoV = new Vertices(itemV.punto, itemV.radio, itemV.area, itemV.name);
-                    arm.agregarVTree(new Vertices(vertice.punto,vertice.radio, vertice.area, vertice.name));
+                    arm.agregarVTree(nwrVert);
                     List<Vertices> conexo = new List<Vertices>();
                     conexo.Add(vertice);
                     cc.Add(conexo);
@@ -319,6 +318,27 @@ namespace CircleDetect
                 }
             }
             return null;
+        }
+        public Bitmap escalaImg(PictureBox picture, Bitmap img_C)
+        {
+            if (img_C.Width > picture.Width || img_C.Height > picture.Height)
+            {
+                float scale;
+                float ScaWi = (float)picture.Width / (float)img_C.Width;
+                float ScaHe = (float)picture.Height / (float)img_C.Height;
+                if (ScaWi < ScaHe)
+                {
+                    scale = ScaWi;
+                }
+                else
+                {
+                    scale = ScaHe;
+                }
+                var sW = (int)(img_C.Width * scale);
+                var sH = (int)(img_C.Height * scale);
+                img_C = new Bitmap(img_C, new Size(sW, sH));
+            }
+            return (Bitmap)img_C;
         }
     }
 }
