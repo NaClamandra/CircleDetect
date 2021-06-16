@@ -117,14 +117,19 @@ namespace CircleDetect
             ofd.Filter = "Archivos de imagen|*.jpg;*.png";
             if (ofd.ShowDialog()==DialogResult.OK)
             {
-                b_prim.Enabled = false;
+                button1.Enabled = false;
+                button3.Enabled = false;
+                label3.Text = "";
+                label6.Text = "";
+                sGrafos.Text = "";
+                /*b_prim.Enabled = false;
                 b_grafo.Enabled = false;
                 b_kruskal.Enabled = false;
                 Kruskaln.Text = "";
                 sGrafos.Text = "";
                 Prim_n.Text = "";
                 listBox2.DataSource = null;
-                listBox3.DataSource = null;
+                listBox3.DataSource = null;*/
                 var img_C = new Bitmap(Image.FromFile(ofd.FileName));
                 img_C = grafo.escalaImg(pictureBox1, img_C);
                 pictureBox1.Image = img_C;
@@ -186,18 +191,18 @@ namespace CircleDetect
             }
             var grafoP = grafo;
             button2.Enabled = false;
-            Kruskaln.Text = grafo.LSubGrafos.Count.ToString();
+            //Kruskaln.Text = grafo.LSubGrafos.Count.ToString();
             sGrafos.Text = grafo.LSubGrafos.Count.ToString();
 
-            listBox2.DataSource = null;
-            listBox2.DataSource = aKruskal;
+            /*listBox2.DataSource = null;
+            listBox2.DataSource = aKruskal;*/
 
             Circulos.Clear();
             puntC.Clear();
             masCercanos.Clear();
-            b_grafo.Enabled = true;
+            /*b_grafo.Enabled = true;
             b_kruskal.Enabled = true;
-            b_prim.Enabled = true;
+            b_prim.Enabled = true;*/
         }
         public Grafo.Vertices Pertenece(int x, int y, Bitmap im)
         {
@@ -211,88 +216,77 @@ namespace CircleDetect
             }
             return vertEn;
         }
+
+        //Click izquierdo
+        Grafo.Vertices VOrigen = null;
+        Grafo.Vertices VDestino = null;
         private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
         {
             if (eGrafo==true)
-            {
-                Graphics g = Graphics.FromImage(copia);
+            {         
                 Color pixel = copia.GetPixel(e.X, e.Y);
                 Grafo.Vertices VertClk = Pertenece(e.X, e.Y, copia);
+
                 //List<Tuple<String, Grafo.Arista>> tuplaAr = new List<Tuple<string, Grafo.Arista>>();
                 ARM nwprim = new ARM();
                 if (VertClk!=null && !Grafo.enArbol(aPrim,VertClk))
                 {
-                    foreach (Grafo.Vertices itemV in grafo.LSubGrafos[VertClk.grupo-1])
+                    switch (e.Button)
                     {
-                        var nwVert = new Grafo.Vertices(itemV.punto, itemV.radio, itemV.area, itemV.name);
-                        nwVert.grupo = itemV.grupo;
-                        nwprim.agregarVTree(nwVert);
-                    }
-                    List<Grafo.Arista> promete = new List<Grafo.Arista>();
-                    List<string> visitado = new List<string>();
-                    List<Grafo.Arista> arCola = new List<Grafo.Arista>();
-                    Grafo.Vertices vertices = VertClk;
-                    foreach (Grafo.Arista itemA in VertClk.ListAr)
-                    {
-                        //tuplaAr.Add(new Tuple<string, Grafo.Arista>(VertClk.name, itemA));
-                        arCola.Add(itemA);
-                    }
-                    visitado.Add(VertClk.name);
-                    Grafo.Arista minAr;
-                    while (arCola.Count>0)
-                    {
-                        minAr = grafo.MinArista(arCola);
-                        if (!visitado.Contains(minAr.sig.name))
-                        {
-                            nwprim.encuentraV(minAr.verId).ListAr.Add(new Grafo.Arista(minAr.sig, minAr.peso));
-                            promete.Add(minAr);
-                            visitado.Add(minAr.sig.name);
-                            foreach (Grafo.Arista ari in minAr.sig.ListAr)
+                        case MouseButtons.Left:
                             {
-                                if (!visitado.Contains(ari.sig.name))
-                                {
-                                    arCola.Add(ari);
-                                }
+                                label3.Text = VertClk.name;
+                                VOrigen = VertClk;
                             }
-                        }
-                        arCola.Remove(minAr);
+                            break;
+                        case MouseButtons.Right:
+                            {
+                                label6.Text = VertClk.name;
+                                VDestino = VertClk;
+                            }
+                            break;
+                        default:
+                            break;
                     }
-                    nwprim.ordenA = promete;
-                    aPrim.Add(nwprim);
-                    nwprim.treePeso();
-                    listBox3.DataSource = null;
-                    listBox3.DataSource = aPrim.OrderBy(o=>o.vertices[0].grupo).ToList();
-                    nwprim.mostrarTree(prim);
-                    pictureBox1.Image = prim;
-                    b_prim.Enabled = false;
-                    b_kruskal.Enabled = true;
+                    if ((VDestino!=null&&VOrigen!=null)&&(VDestino.grupo != VOrigen.grupo))
+                    {
+                        button1.Enabled = false;
+                        button3.Enabled = false;
+                    }
+                    else if (VDestino != null && VOrigen != null)
+                    {
+                        button1.Enabled = true;
+                        button3.Enabled = true;
+                    }
                 }
-                Prim_n.Text = aPrim.Count.ToString();
+
             }
         }
 
-        private void b_kruskal_Click(object sender, EventArgs e)
-        {
-            pictureBox1.Image = kruskal;
-            b_kruskal.Enabled = false;
-            b_prim.Enabled = true;
-            b_grafo.Enabled = true;
-        }
 
-        private void b_prim_Click(object sender, EventArgs e)
-        {
-            pictureBox1.Image = prim;
-            b_kruskal.Enabled = true;
-            b_prim.Enabled = false;
-            b_grafo.Enabled = true;
-        }
+        /*
+private void b_kruskal_Click(object sender, EventArgs e)
+{
+pictureBox1.Image = kruskal;
+b_kruskal.Enabled = false;
+b_prim.Enabled = true;
+b_grafo.Enabled = true;
+}
 
-        private void b_grafo_Click(object sender, EventArgs e)
-        {
-            pictureBox1.Image = copia;
-            b_prim.Enabled = true;
-            b_kruskal.Enabled = true;
-            b_grafo.Enabled = false;
-        }
+private void b_prim_Click(object sender, EventArgs e)
+{
+pictureBox1.Image = prim;
+b_kruskal.Enabled = true;
+b_prim.Enabled = false;
+b_grafo.Enabled = true;
+}
+
+private void b_grafo_Click(object sender, EventArgs e)
+{
+pictureBox1.Image = copia;
+b_prim.Enabled = true;
+b_kruskal.Enabled = true;
+b_grafo.Enabled = false;
+}*/
     }
 }

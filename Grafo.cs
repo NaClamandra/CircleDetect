@@ -34,6 +34,7 @@ namespace CircleDetect
             public Vertices sig;
             public string verId;
             public int peso;
+            public List<Point> camino;
             public Arista(Vertices vertice, int peso, string id="")
             {
                 this.sig = vertice;
@@ -107,9 +108,11 @@ namespace CircleDetect
                 this.radio = radio;
                 this.area = area;
             }
-            public void añadeArista(Vertices vertice, int peso)
+            public void añadeArista(Vertices vertice, int peso, List<Point> camino)
             {
-                this.ListAr.Add(new Arista(vertice,peso));
+                Arista nArista = new Arista(vertice, peso);
+                nArista.camino = camino;
+                this.ListAr.Add(nArista);
             }
         }
         public Arista MinArista(List<Arista> aristas)
@@ -149,9 +152,10 @@ namespace CircleDetect
                 i++;
             }
         }
-        public int bresenham(Bitmap bresen, Circulo circ1, Circulo circ2)
+        public List<Point> bresenham(Bitmap bresen, Circulo circ1, Circulo circ2)
         {
             int peso = 0;
+            List<Point> caminos = new List<Point>();
             Graphics g = Graphics.FromImage(bresen);
             SolidBrush white = new SolidBrush(White);
             Color pixel;
@@ -163,10 +167,12 @@ namespace CircleDetect
             int err = (dx > dy ? dx : -dy) / 2, e2;
             while (true)
             {
+                caminos.Add(new Point(x0, y0));
                 pixel = bresen.GetPixel(x0, y0);
                 if (pixel.R != 255 || pixel.G != 255 || pixel.B != 255)
                 {
-                    return -1;
+                    caminos.Clear();
+                    return caminos;
                 }
                 if (x0 == x1 && y0 == y1) break;
                 e2 = err;
@@ -174,7 +180,7 @@ namespace CircleDetect
                 if (e2 < dy) { err += dx; y0 += sy; }
                 peso++;
             }
-            return peso;
+            return caminos;
         }
         public double Distancia(Point a, Point b)
         {
@@ -195,11 +201,13 @@ namespace CircleDetect
                 {
                     if (i != j)
                     {
-                        int pesoAr = bresenham((Bitmap)pic.Clone(), Circulos[i], Circulos[j]);
-                        if (pesoAr>=0)
+                        int pesoAr;
+                        List<Point> caminoAr;
+                        caminoAr = bresenham((Bitmap)pic.Clone(), Circulos[i], Circulos[j]);
+                        if (caminoAr.Count > 0)
                         {
                             pesoAr = (int)Distancia(nwVert[j].punto, nwVert[i].punto);
-                            nwVert[i].añadeArista(nwVert[j], pesoAr);
+                            nwVert[i].añadeArista(nwVert[j], pesoAr, caminoAr);
                         }
                     }
                 }
