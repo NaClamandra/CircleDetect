@@ -348,5 +348,27 @@ namespace CircleDetect
             }
             return (Bitmap)img_C;
         }
+
+        public static Bitmap scaleSize(Size taman, Image img_C)
+        {
+            if (img_C.Width > taman.Width || img_C.Height > taman.Height)
+            {
+                float scale;
+                float ScaWi = (float)taman.Width / (float)img_C.Width;
+                float ScaHe = (float)taman.Height / (float)img_C.Height;
+                if (ScaWi < ScaHe)
+                {
+                    scale = ScaWi;
+                }
+                else
+                {
+                    scale = ScaHe;
+                }
+                var sW = (int)(img_C.Width * scale);
+                var sH = (int)(img_C.Height * scale);
+                img_C = new Bitmap(img_C, new Size(sW, sH));
+            }
+            return (Bitmap)img_C;
+        }
     }
 }

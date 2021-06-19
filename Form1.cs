@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Timers;
 
 namespace CircleDetect
 {
@@ -19,15 +20,18 @@ namespace CircleDetect
         Grafo grafo = new Grafo();
         List<ARM> aPrim;
         List<ARM> aKruskal;
-        ARM KruskalPulsado;
-        ARM PrimPulsado;
+        List<Dijstra> eDijstra;
+        List<Grafo.Vertices> vCamino;
         Bitmap copia;
         Bitmap prim;
         Bitmap kruskal;
+        Bitmap Camino;
         List<Circulo> Circulos = new List<Circulo>();
         List<Point> puntC = new List<Point>();
         List<Circulo> masCercanos = new List<Circulo>();
         bool eGrafo;
+        Image estrella = Grafo.scaleSize(new Size(40,40), Image.FromFile("..\\..\\..\\images\\estrella.png"));
+
         public Form_Principal()
         {
             InitializeComponent();
@@ -193,16 +197,17 @@ namespace CircleDetect
             button2.Enabled = false;
             //Kruskaln.Text = grafo.LSubGrafos.Count.ToString();
             sGrafos.Text = grafo.LSubGrafos.Count.ToString();
-
             /*listBox2.DataSource = null;
             listBox2.DataSource = aKruskal;*/
-
             Circulos.Clear();
             puntC.Clear();
             masCercanos.Clear();
             /*b_grafo.Enabled = true;
             b_kruskal.Enabled = true;
             b_prim.Enabled = true;*/
+            Camino = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
+            pictureBox1.Image = Camino;
+            pictureBox1.BackgroundImage = copia;
         }
         public Grafo.Vertices Pertenece(int x, int y, Bitmap im)
         {
@@ -237,6 +242,9 @@ namespace CircleDetect
                             {
                                 label3.Text = VertClk.name;
                                 VOrigen = VertClk;
+                                Camino = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
+                                pictureBox1.Image = Camino;
+                                FuncionesDjstr.dibujaPart(VOrigen.punto, Camino, estrella);
                             }
                             break;
                         case MouseButtons.Right:
@@ -250,11 +258,15 @@ namespace CircleDetect
                     }
                     if ((VDestino!=null&&VOrigen!=null)&&(VDestino.grupo != VOrigen.grupo))
                     {
+                        eDijstra = null;
+                        vCamino = null;
                         button1.Enabled = false;
                         button3.Enabled = false;
                     }
                     else if (VDestino != null && VOrigen != null)
                     {
+                        eDijstra = FuncionesDjstr.elementoDjistra(grafo, VOrigen);
+                        vCamino = FuncionesDjstr.obtenerVertices(eDijstra, VDestino, VOrigen);
                         button1.Enabled = true;
                         button3.Enabled = true;
                     }
@@ -263,30 +275,85 @@ namespace CircleDetect
             }
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //Bitmap Dij;
+            Camino = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
+            pictureBox1.Image = Camino;
+            pictureBox1.BackgroundImage = copia;
+            for (int i = 0; i < vCamino.Count-1; i++)
+            {
+                Graphics f = Graphics.FromImage(Camino);
+                Pen p = new Pen(Color.Blue, 4);
+                f.DrawLine(p, vCamino[i].punto, vCamino[i + 1].punto);
+            }
+            FuncionesDjstr.dibujaPart(VOrigen.punto, Camino, estrella);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            List<List<Point>> bressen = new List<List<Point>>();
+            button3.Enabled = false;
+            button2.Enabled = false;
+            for (int i = 0; vCamino.Count() - 1  > i; i++)
+            {
+                foreach (var ar in vCamino[i].ListAr)
+                {
+                    if (ar.sig == vCamino[i+1])
+                    {
+                        bressen.Add(ar.camino);
+                        break;
+                    }
+                }
+            }
+            foreach (List<Point> camino in bressen)
+            {
+                foreach (Point punto in camino)
+                {
+                    Camino = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
+                    pictureBox1.Image = Camino;
+                    for (int i = 0; i < vCamino.Count - 1; i++)
+                    {
+                        Graphics f = Graphics.FromImage(Camino);
+                        Pen p = new Pen(Color.Blue, 4);
+                        f.DrawLine(p, vCamino[i].punto, vCamino[i + 1].punto);
+                    }
+                    FuncionesDjstr.dibujaPart(punto, Camino, estrella);
+                    pictureBox1.Refresh();
+                    System.Threading.Thread.Sleep(1);
+                }
+            }
+            label3.Text = VDestino.name;
+            VOrigen = VDestino;
+            vCamino = FuncionesDjstr.obtenerVertices(eDijstra, VDestino, VOrigen);
+            button3.Enabled = true;
+            button2.Enabled = true;
+        }
+
 
         /*
-private void b_kruskal_Click(object sender, EventArgs e)
-{
-pictureBox1.Image = kruskal;
-b_kruskal.Enabled = false;
-b_prim.Enabled = true;
-b_grafo.Enabled = true;
-}
+        private void b_kruskal_Click(object sender, EventArgs e)
+        {
+        pictureBox1.Image = kruskal;
+        b_kruskal.Enabled = false;
+        b_prim.Enabled = true;
+        b_grafo.Enabled = true;
+        }
 
-private void b_prim_Click(object sender, EventArgs e)
-{
-pictureBox1.Image = prim;
-b_kruskal.Enabled = true;
-b_prim.Enabled = false;
-b_grafo.Enabled = true;
-}
+        private void b_prim_Click(object sender, EventArgs e)
+        {
+        pictureBox1.Image = prim;
+        b_kruskal.Enabled = true;
+        b_prim.Enabled = false;
+        b_grafo.Enabled = true;
+        }
 
-private void b_grafo_Click(object sender, EventArgs e)
-{
-pictureBox1.Image = copia;
-b_prim.Enabled = true;
-b_kruskal.Enabled = true;
-b_grafo.Enabled = false;
-}*/
+        private void b_grafo_Click(object sender, EventArgs e)
+        {
+        pictureBox1.Image = copia;
+        b_prim.Enabled = true;
+        b_kruskal.Enabled = true;
+        b_grafo.Enabled = false;
+        }*/
     }
 }
