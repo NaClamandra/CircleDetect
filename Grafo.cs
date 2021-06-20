@@ -11,7 +11,7 @@ namespace CircleDetect
         Color White = Color.FromArgb(255, 255, 255, 255);
         public List<Vertices> List_Vert;
         public int numVert;
-        public int nSubGrafo=1;
+        public int nSubGrafo = 1;
         public List<List<Vertices>> LSubGrafos;
         public Grafo()
         {
@@ -35,7 +35,7 @@ namespace CircleDetect
             public string verId;
             public int peso;
             public List<Point> camino;
-            public Arista(Vertices vertice, int peso, string id="")
+            public Arista(Vertices vertice, int peso, string id = "")
             {
                 this.sig = vertice;
                 this.peso = peso;
@@ -45,7 +45,7 @@ namespace CircleDetect
         public void subGrafos()
         {
             this.nSubGrafo = 0;
-            List<Vertices> verticeCola = new  List<Vertices>();
+            List<Vertices> verticeCola = new List<Vertices>();
             foreach (Vertices Vertice in List_Vert)
             {
                 if (Vertice.grupo == 0)
@@ -55,7 +55,7 @@ namespace CircleDetect
                     Vertice.grupo = nSubGrafo;
                     Vertices padreVer = Vertice;
 
-                    while( verticeCola.Count > 0)
+                    while (verticeCola.Count > 0)
                     {
                         if (verticeCola[0].grupo == 0)
                         {
@@ -99,7 +99,7 @@ namespace CircleDetect
             public int radio;
             public double area;
             public int grupo;
-            public Vertices(Point punto,int radio, double area, string id="")
+            public Vertices(Point punto, int radio, double area, string id = "")
             {
                 this.ListAr = new List<Arista>();
                 this.grupo = 0;
@@ -120,7 +120,7 @@ namespace CircleDetect
             Arista Min = aristas[0];
             foreach (Arista itemA in aristas)
             {
-                if (Min.peso>itemA.peso)
+                if (Min.peso > itemA.peso)
                 {
                     Min = itemA;
                 }
@@ -152,16 +152,45 @@ namespace CircleDetect
                 i++;
             }
         }
-        public List<Point> bresenham(Bitmap bresen, Circulo circ1, Circulo circ2)
+
+        public double Distancia(Point a, Point b)
+        {
+            float dX = b.X - a.X;
+            float dY = b.Y - a.Y;
+            return Math.Sqrt((dX * dX) + (dY * dY));
+        }
+        /*
+        public static bool pertenece(int x, int y, Circulo circ1, Circulo circ2){
+        Grafo.Vertices vertEn = null;
+            if(Distancia(new Point(x, y), circ1.puntoC)-circ1.radio<0)
+            {
+                return item;
+            }
+        return vertEn;    
+
+        }*/
+        public Grafo.Vertices Pertenece(int x, int y, Bitmap im, Grafo grf)
+        {
+            Grafo.Vertices vertEn = null;
+            foreach (Grafo.Vertices item in grf.List_Vert)
+            {
+                if (grf.Distancia(new Point(x, y), item.punto) - item.radio <= 2)
+                {
+                    return item;
+                }
+            }
+            return vertEn;
+        }
+        public List<Point> bresenham(Bitmap bresen, Grafo.Vertices circ1, Grafo.Vertices circ2, Grafo grf)
         {
             int peso = 0;
             List<Point> caminos = new List<Point>();
             Graphics g = Graphics.FromImage(bresen);
             SolidBrush white = new SolidBrush(White);
             Color pixel;
-            g.FillEllipse(white, circ1.puntoC.X - circ1.radio - 2, circ1.puntoC.Y - circ1.radio - 1, circ1.radio * 2 + 4, circ1.radio * 2 + 4);
-            g.FillEllipse(white, circ2.puntoC.X - circ2.radio - 2, circ2.puntoC.Y - circ2.radio - 1, circ2.radio * 2 + 4, circ2.radio * 2 + 4);
-            int x0 = circ1.puntoC.X, y0 = circ1.puntoC.Y, x1 = circ2.puntoC.X, y1 = circ2.puntoC.Y;
+            //g.FillEllipse(white, circ1.puntoC.X - circ1.radio - 2, circ1.puntoC.Y - circ1.radio - 1, circ1.radio * 2 + 4, circ1.radio * 2 + 4);
+            //g.FillEllipse(white, circ2.puntoC.X - circ2.radio - 2, circ2.puntoC.Y - circ2.radio - 1, circ2.radio * 2 + 4, circ2.radio * 2 + 4);
+            int x0 = circ1.punto.X, y0 = circ1.punto.Y, x1 = circ2.punto.X, y1 = circ2.punto.Y;
             int dx = Math.Abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
             int dy = Math.Abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
             int err = (dx > dy ? dx : -dy) / 2, e2;
@@ -169,10 +198,15 @@ namespace CircleDetect
             {
                 caminos.Add(new Point(x0, y0));
                 pixel = bresen.GetPixel(x0, y0);
-                if (pixel.R != 255 || pixel.G != 255 || pixel.B != 255)
+                if ((pixel.R != 255 || pixel.G != 255 || pixel.B != 255))
                 {
-                    caminos.Clear();
-                    return caminos;
+                    Grafo.Vertices veP = Pertenece(x0, y0, bresen, grf);
+                    if (veP!=circ1 && veP!= circ2)
+                    {
+                        caminos.Clear();
+                        //bresen.Dispose();
+                        return caminos;
+                    }
                 }
                 if (x0 == x1 && y0 == y1) break;
                 e2 = err;
@@ -180,32 +214,25 @@ namespace CircleDetect
                 if (e2 < dy) { err += dx; y0 += sy; }
                 peso++;
             }
+            //bresen.Dispose();
             return caminos;
         }
-        public double Distancia(Point a, Point b)
-        {
-            float dX = b.X - a.X;
-            float dY = b.Y - a.Y;
-            return Math.Sqrt((dX * dX) + (dY * dY));
-        }
-        public List<Vertices> calcularVertices(Bitmap pic, List<Circulo> Circulos)
+
+        public List<Vertices> calcularVertices(Bitmap pic, Grafo grf)
         {
             pic = (Bitmap)pic.Clone();
-            List<Vertices> nwVert = new List<Vertices>();
-            foreach (Circulo item in Circulos)
+            List<Vertices> nwVert = grf.List_Vert;
+            for (int i = 0; i < nwVert.Count; i++)
             {
-                nwVert.Add(new Vertices(item.puntoC, item.radio, item.area));
-            }
-            for (int i = 0; i < Circulos.Count; i++)
-            {
-                //MessageBox.Show("Cola");
-                for (int j = 0; j < Circulos.Count; j++)
+
+                for (int j = 0; j < nwVert.Count; j++)
                 {
+                    
                     if (i != j)
                     {
                         int pesoAr;
                         List<Point> caminoAr;
-                        caminoAr = bresenham((Bitmap)pic, Circulos[i], Circulos[j]);
+                        caminoAr = bresenham((Bitmap)pic, nwVert[i], nwVert[j], grf);
                         if (caminoAr.Count > 0)
                         {
                             pesoAr = (int)Distancia(nwVert[j].punto, nwVert[i].punto);
@@ -231,14 +258,14 @@ namespace CircleDetect
                     //g.DrawString(item2.peso.ToString(), FF, cola1, (item.punto.X+item2.sig.punto.X)/2, (item.punto.Y + item2.sig.punto.Y) / 2);
                 }
             }
-            foreach (Vertices item in List_Vert)
+            /*foreach (Vertices item in List_Vert)
             {
                 SolidBrush drawBrush = new SolidBrush(Color.OrangeRed);
                 StringFormat drawFormat = new StringFormat();
                 drawFormat.FormatFlags = StringFormatFlags.DirectionRightToLeft;
                 Font drawFont = new Font("Arial", 24);
                 g.DrawString(item.name, drawFont, drawBrush, item.punto.X, item.punto.Y, drawFormat);
-            }
+            }*/
             foreach (Vertices vert in List_Vert)
             {
                 //g.DrawString("g:" + vert.grupo.ToString(), FF, cola1, vert.punto.X - 10, vert.punto.Y - 10);
