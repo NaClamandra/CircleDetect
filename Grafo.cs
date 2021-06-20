@@ -115,44 +115,6 @@ namespace CircleDetect
                 this.ListAr.Add(nArista);
             }
         }
-        public Arista MinArista(List<Arista> aristas)
-        {
-            Arista Min = aristas[0];
-            foreach (Arista itemA in aristas)
-            {
-                if (Min.peso > itemA.peso)
-                {
-                    Min = itemA;
-                }
-            }
-            return Min;
-        }
-        public void matriz(DataGridView tablon)
-        {
-            int i = 0;
-            foreach (Vertices item in this.List_Vert)
-            {
-                tablon.Columns.Add(item.name, item.name);
-                tablon.Columns[i].Width = 55;
-                tablon.Rows.Add();
-                tablon.Rows[i].HeaderCell.Value = item.name;
-                i++;
-            }
-            i = 0;
-            foreach (Vertices ver in this.List_Vert)
-            {
-                for (int j = 0; j < tablon.Columns.Count; j++)
-                {
-                    tablon.Rows[i].Cells[j].Value = 0;
-                }
-                foreach (Arista ari in ver.ListAr)
-                {
-                    tablon.Rows[i].Cells[tablon.Columns[ari.sig.name].Index].Value = 1;
-                }
-                i++;
-            }
-        }
-
         public double Distancia(Point a, Point b)
         {
             float dX = b.X - a.X;
@@ -160,18 +122,6 @@ namespace CircleDetect
             return Math.Sqrt((dX * dX) + (dY * dY));
         }
 
-        /*public Grafo.Vertices Pertenece(int x, int y, Bitmap im, Grafo grf)
-        {
-            Grafo.Vertices vertEn = null;
-            foreach (Grafo.Vertices item in grf.List_Vert)
-            {
-                if (grf.Distancia(new Point(x, y), item.punto) - item.radio <= 2)
-                {
-                    return item;
-                }
-            }
-            return vertEn;
-        }*/
         public List<Point> bresenham(Bitmap bresen, Grafo.Vertices circ1, Grafo.Vertices circ2, Grafo grf)
         {
             int peso = 0;
@@ -192,15 +142,10 @@ namespace CircleDetect
                 pixel = bresen.GetPixel(x0, y0);
                 if ((pixel.R != 255 || pixel.G != 255 || pixel.B != 255))
                 {
-                    //Grafo.Vertices veP = Pertenece(x0, y0, bresen, grf);
-                   // if (veP!=circ1 && veP!= circ2)
-                   // {
                     caminos.Clear();
                     g.FillEllipse(black, circ1.punto.X - circ1.radio - 2, circ1.punto.Y - circ1.radio - 1, circ1.radio * 2 + 4, circ1.radio * 2 + 4);
                     g.FillEllipse(black, circ2.punto.X - circ2.radio - 2, circ2.punto.Y - circ2.radio - 1, circ2.radio * 2 + 4, circ2.radio * 2 + 4);
-                    //bresen.Dispose();
                     return caminos;
-                    //}
                 }
                 if (x0 == x1 && y0 == y1) break;
                 e2 = err;
@@ -208,7 +153,6 @@ namespace CircleDetect
                 if (e2 < dy) { err += dx; y0 += sy; }
                 peso++;
             }
-            //bresen.Dispose();
             g.FillEllipse(black, circ1.punto.X - circ1.radio - 2, circ1.punto.Y - circ1.radio - 1, circ1.radio * 2 + 4, circ1.radio * 2 + 4);
             g.FillEllipse(black, circ2.punto.X - circ2.radio - 2, circ2.punto.Y - circ2.radio - 1, circ2.radio * 2 + 4, circ2.radio * 2 + 4);
             return caminos;
@@ -268,91 +212,6 @@ namespace CircleDetect
             {
                 //g.DrawString("g:" + vert.grupo.ToString(), FF, cola1, vert.punto.X - 10, vert.punto.Y - 10);
             }
-        }
-        public static bool enArbol(List<ARM> arbol, Vertices vertice)
-        {
-            foreach (var item in arbol)
-            {
-                foreach (Vertices ver in item.vertices)
-                {
-                    if (ver.name == vertice.name)
-                    {
-                        return true;
-                    }
-                }
-            } 
-            return false;
-        }
-        /*public ARM Kruscal(ARM arm, List<Vertices> sGrafo)
-        {
-                List<Vertices> visitados = new List<Vertices>();
-                Arista minAr;
-                List<Arista> candidato = new List<Arista>();
-                List<Arista> promete = new List<Arista>();
-                List<string> visited = new List<string>();
-                List<List<Vertices>> cc = new List<List<Vertices>>();
-                foreach (Vertices vertice in sGrafo)
-                {
-                    var nwrVert = new Vertices(vertice.punto, vertice.radio, vertice.area, vertice.name);
-                    nwrVert.grupo = vertice.grupo;
-                    //var nuevoV = new Vertices(itemV.punto, itemV.radio, itemV.area, itemV.name);
-                    arm.agregarVTree(nwrVert);
-                    List<Vertices> conexo = new List<Vertices>();
-                    conexo.Add(vertice);
-                    cc.Add(conexo);
-                    foreach (Arista itemA in vertice.ListAr)
-                    {
-                        if (!visitados.Contains(itemA.sig))
-                        {
-                            candidato.Add(itemA);
-                        }
-                    }
-                    visitados.Add(vertice);
-                }
-                while (cc.Count != 1)
-                {
-                    minAr = MinArista(candidato);
-                    var c_1 = findVerticeCC(cc, findVertList(sGrafo, minAr.verId));
-                    var c_2 = findVerticeCC(cc, minAr.sig);
-                    if (c_1 != c_2)
-                    {
-                        List<Vertices> newcc = new List<Vertices>();
-                        c_1.AddRange(c_2);
-                        cc.Remove(c_2);
-                        promete.Add(minAr);
-                        arm.encuentraV(minAr.verId).ListAr.Add(new Grafo.Arista(minAr.sig, minAr.peso));
-                    }
-
-                    candidato.Remove(minAr);
-                }
-                arm.ordenA = promete;
-                return arm;
-
-        }*/
-        public static Vertices findVertList(List<Vertices>lista, string id)
-        {
-            foreach (var Vert in lista)
-            {
-                if (Vert.name==id)
-                {
-                    return Vert;
-                }
-            }
-            return null;
-        }
-        public static List<Vertices> findVerticeCC(List<List<Vertices>> CCs, Vertices vertice)
-        {
-            foreach (List<Vertices> item in CCs)
-            {
-                foreach (Vertices itemV in item)
-                {
-                    if (itemV==vertice)
-                    {
-                        return item;
-                    }
-                }
-            }
-            return null;
         }
         public Bitmap escalaImg(PictureBox picture, Bitmap img_C)
         {

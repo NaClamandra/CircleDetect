@@ -18,13 +18,9 @@ namespace CircleDetect
         int circulo = 0;
         int blanco = 1; 
         Grafo grafo = new Grafo();
-        List<ARM> aPrim;
-        List<ARM> aKruskal;
         List<Dijstra> eDijstra;
         List<Grafo.Vertices> vCamino;
         Bitmap copia;
-        Bitmap prim;
-        Bitmap kruskal;
         Bitmap Camino;
         Grafo.Vertices VOrigen = null;
         Grafo.Vertices VDestino = null;
@@ -129,29 +125,16 @@ namespace CircleDetect
                 label3.Text = "";
                 label6.Text = "";
                 sGrafos.Text = "";
-                /*b_prim.Enabled = false;
-                b_grafo.Enabled = false;
-                b_kruskal.Enabled = false;
-                Kruskaln.Text = "";
-                sGrafos.Text = "";
-                Prim_n.Text = "";
-                listBox2.DataSource = null;
-                listBox3.DataSource = null;*/
                 var img_C = new Bitmap(Image.FromFile(ofd.FileName));
                 img_C = grafo.escalaImg(pictureBox1, img_C);
                 pictureBox1.Image = img_C;
                 copia = (Bitmap)img_C;
-                //kruskal = (Bitmap)copia.Clone();
-                //prim = (Bitmap)copia.Clone();
                 progressBar1.Value = 0;
                 button2.Enabled = true;
             }
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            //aKruskal = new List<ARM>();
-            //aPrim = new List<ARM>();
-            //dataGridView1.Columns.Clear();
             var img = (Bitmap)pictureBox1.Image;
             copia = (Bitmap)img.Clone();
             Bitmap senal = new Bitmap(800, 200);;
@@ -171,33 +154,15 @@ namespace CircleDetect
                 grafo.añadirVert(new Grafo.Vertices(item.puntoC, item.radio, item.area));
             }
             grafo.calcularVertices(copia, grafo, progressBar1);
-            /*foreach (Grafo.Vertices item in grafo.calcularVertices(copia, Circulos))
-            {
-                grafo.añadirVert(item);
-                    
-            } */
+
             SolidBrush drawBrush = new SolidBrush(Color.Black);
             StringFormat drawFormat = new StringFormat();
             drawFormat.FormatFlags = StringFormatFlags.DirectionRightToLeft;
             Font drawFont = new Font("Arial", 15);
             eGrafo = true;
 
-
             grafo.subGrafos();
             grafo.mostrarGrafo(copia,progressBar1);
-            //grafo.matriz(dataGridView1);
-
-            foreach (var subGraph in grafo.LSubGrafos)
-            {
-                var nwKruskal = new ARM();
-                //aKruskal.Add(grafo.Kruscal(nwKruskal, subGraph));             
-            }
-
-            /*foreach (var a_kruskal in aKruskal)
-            {
-                a_kruskal.mostrarTree(kruskal);
-                a_kruskal.treePeso();
-            }*/
 
             foreach (Circulo item in Circulos)
             {
@@ -205,16 +170,10 @@ namespace CircleDetect
             }
             var grafoP = grafo;
             button2.Enabled = false;
-            //Kruskaln.Text = grafo.LSubGrafos.Count.ToString();
             sGrafos.Text = grafo.LSubGrafos.Count.ToString();
-            /*listBox2.DataSource = null;
-            listBox2.DataSource = aKruskal;*/
             Circulos.Clear();
             puntC.Clear();
             masCercanos.Clear();
-            /*b_grafo.Enabled = true;
-            b_kruskal.Enabled = true;
-            b_prim.Enabled = true;*/
             Camino = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
             pictureBox1.Image = Camino;
             pictureBox1.BackgroundImage = copia;
@@ -233,18 +192,14 @@ namespace CircleDetect
             return vertEn;
         }
 
-        //Click izquierdo
-
+        //Click
         private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
         {
             if (eGrafo==true)
             {         
                 Color pixel = copia.GetPixel(e.X, e.Y);
                 Grafo.Vertices VertClk = Pertenece(e.X, e.Y, copia);
-
-                //List<Tuple<String, Grafo.Arista>> tuplaAr = new List<Tuple<string, Grafo.Arista>>();
-                ARM nwprim = new ARM();
-                if (VertClk!=null /*&& !Grafo.enArbol(aPrim,VertClk)*/)
+                if (VertClk!=null)
                 {
                     switch (e.Button)
                     {
@@ -287,14 +242,13 @@ namespace CircleDetect
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //Bitmap Dij;
             Camino = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
             pictureBox1.Image = Camino;
             pictureBox1.BackgroundImage = copia;
             for (int i = 0; i < vCamino.Count-1; i++)
             {
                 Graphics f = Graphics.FromImage(Camino);
-                Pen p = new Pen(Color.Red, 1);
+                Pen p = new Pen(Color.Red, 2);
                 f.DrawLine(p, vCamino[i].punto, vCamino[i + 1].punto);
             }
             FuncionesDjstr.dibujaPart(VOrigen.punto, Camino, estrella);
@@ -339,31 +293,5 @@ namespace CircleDetect
             button3.Enabled = true;
             button1.Enabled = true;
         }
-
-
-        /*
-        private void b_kruskal_Click(object sender, EventArgs e)
-        {
-        pictureBox1.Image = kruskal;
-        b_kruskal.Enabled = false;
-        b_prim.Enabled = true;
-        b_grafo.Enabled = true;
-        }
-
-        private void b_prim_Click(object sender, EventArgs e)
-        {
-        pictureBox1.Image = prim;
-        b_kruskal.Enabled = true;
-        b_prim.Enabled = false;
-        b_grafo.Enabled = true;
-        }
-
-        private void b_grafo_Click(object sender, EventArgs e)
-        {
-        pictureBox1.Image = copia;
-        b_prim.Enabled = true;
-        b_kruskal.Enabled = true;
-        b_grafo.Enabled = false;
-        }*/
     }
 }
