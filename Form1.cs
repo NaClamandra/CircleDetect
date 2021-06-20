@@ -165,13 +165,12 @@ namespace CircleDetect
             SolidBrush grn = new SolidBrush(Color.LightGreen);
             SolidBrush blk = new SolidBrush(Color.Black);
 
-            progressBar1.Maximum = Circulos.Count();
+            progressBar1.Maximum = (Circulos.Count())*2;
             foreach (Circulo item in Circulos)
             {
-                progressBar1.PerformStep();
                 grafo.añadirVert(new Grafo.Vertices(item.puntoC, item.radio, item.area));
             }
-            grafo.calcularVertices(copia, grafo);
+            grafo.calcularVertices(copia, grafo, progressBar1);
             /*foreach (Grafo.Vertices item in grafo.calcularVertices(copia, Circulos))
             {
                 grafo.añadirVert(item);
@@ -185,7 +184,7 @@ namespace CircleDetect
 
 
             grafo.subGrafos();
-            grafo.mostrarGrafo(copia);
+            grafo.mostrarGrafo(copia,progressBar1);
             //grafo.matriz(dataGridView1);
 
             foreach (var subGraph in grafo.LSubGrafos)

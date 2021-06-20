@@ -159,17 +159,8 @@ namespace CircleDetect
             float dY = b.Y - a.Y;
             return Math.Sqrt((dX * dX) + (dY * dY));
         }
-        /*
-        public static bool pertenece(int x, int y, Circulo circ1, Circulo circ2){
-        Grafo.Vertices vertEn = null;
-            if(Distancia(new Point(x, y), circ1.puntoC)-circ1.radio<0)
-            {
-                return item;
-            }
-        return vertEn;    
 
-        }*/
-        public Grafo.Vertices Pertenece(int x, int y, Bitmap im, Grafo grf)
+        /*public Grafo.Vertices Pertenece(int x, int y, Bitmap im, Grafo grf)
         {
             Grafo.Vertices vertEn = null;
             foreach (Grafo.Vertices item in grf.List_Vert)
@@ -180,16 +171,17 @@ namespace CircleDetect
                 }
             }
             return vertEn;
-        }
+        }*/
         public List<Point> bresenham(Bitmap bresen, Grafo.Vertices circ1, Grafo.Vertices circ2, Grafo grf)
         {
             int peso = 0;
             List<Point> caminos = new List<Point>();
             Graphics g = Graphics.FromImage(bresen);
             SolidBrush white = new SolidBrush(White);
+            SolidBrush black = new SolidBrush(Color.Black);
             Color pixel;
-            //g.FillEllipse(white, circ1.puntoC.X - circ1.radio - 2, circ1.puntoC.Y - circ1.radio - 1, circ1.radio * 2 + 4, circ1.radio * 2 + 4);
-            //g.FillEllipse(white, circ2.puntoC.X - circ2.radio - 2, circ2.puntoC.Y - circ2.radio - 1, circ2.radio * 2 + 4, circ2.radio * 2 + 4);
+            g.FillEllipse(white, circ1.punto.X - circ1.radio - 2, circ1.punto.Y - circ1.radio - 1, circ1.radio * 2 + 4, circ1.radio * 2 + 4);
+            g.FillEllipse(white, circ2.punto.X - circ2.radio - 2, circ2.punto.Y - circ2.radio - 1, circ2.radio * 2 + 4, circ2.radio * 2 + 4);
             int x0 = circ1.punto.X, y0 = circ1.punto.Y, x1 = circ2.punto.X, y1 = circ2.punto.Y;
             int dx = Math.Abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
             int dy = Math.Abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
@@ -200,13 +192,15 @@ namespace CircleDetect
                 pixel = bresen.GetPixel(x0, y0);
                 if ((pixel.R != 255 || pixel.G != 255 || pixel.B != 255))
                 {
-                    Grafo.Vertices veP = Pertenece(x0, y0, bresen, grf);
-                    if (veP!=circ1 && veP!= circ2)
-                    {
-                        caminos.Clear();
-                        //bresen.Dispose();
-                        return caminos;
-                    }
+                    //Grafo.Vertices veP = Pertenece(x0, y0, bresen, grf);
+                   // if (veP!=circ1 && veP!= circ2)
+                   // {
+                    caminos.Clear();
+                    g.FillEllipse(black, circ1.punto.X - circ1.radio - 2, circ1.punto.Y - circ1.radio - 1, circ1.radio * 2 + 4, circ1.radio * 2 + 4);
+                    g.FillEllipse(black, circ2.punto.X - circ2.radio - 2, circ2.punto.Y - circ2.radio - 1, circ2.radio * 2 + 4, circ2.radio * 2 + 4);
+                    //bresen.Dispose();
+                    return caminos;
+                    //}
                 }
                 if (x0 == x1 && y0 == y1) break;
                 e2 = err;
@@ -215,19 +209,19 @@ namespace CircleDetect
                 peso++;
             }
             //bresen.Dispose();
+            g.FillEllipse(black, circ1.punto.X - circ1.radio - 2, circ1.punto.Y - circ1.radio - 1, circ1.radio * 2 + 4, circ1.radio * 2 + 4);
+            g.FillEllipse(black, circ2.punto.X - circ2.radio - 2, circ2.punto.Y - circ2.radio - 1, circ2.radio * 2 + 4, circ2.radio * 2 + 4);
             return caminos;
         }
 
-        public List<Vertices> calcularVertices(Bitmap pic, Grafo grf)
+        public List<Vertices> calcularVertices(Bitmap pic, Grafo grf, ProgressBar barra)
         {
             pic = (Bitmap)pic.Clone();
             List<Vertices> nwVert = grf.List_Vert;
             for (int i = 0; i < nwVert.Count; i++)
-            {
-
+            {              
                 for (int j = 0; j < nwVert.Count; j++)
                 {
-                    
                     if (i != j)
                     {
                         int pesoAr;
@@ -240,10 +234,12 @@ namespace CircleDetect
                         }
                     }
                 }
+                barra.PerformStep();
+                barra.Refresh();
             }
             return nwVert;
         }
-        public void mostrarGrafo(Bitmap clon)
+        public void mostrarGrafo(Bitmap clon, ProgressBar barra)
         {
             SolidBrush cola1 = new SolidBrush(Color.Red);
             StringFormat cola = new StringFormat();
@@ -257,6 +253,8 @@ namespace CircleDetect
                     g.DrawLine(p, item.punto, item2.sig.punto);
                     //g.DrawString(item2.peso.ToString(), FF, cola1, (item.punto.X+item2.sig.punto.X)/2, (item.punto.Y + item2.sig.punto.Y) / 2);
                 }
+                barra.PerformStep();
+                barra.Refresh();
             }
             /*foreach (Vertices item in List_Vert)
             {
