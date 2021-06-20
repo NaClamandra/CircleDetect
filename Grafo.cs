@@ -190,6 +190,7 @@ namespace CircleDetect
         }
         public List<Vertices> calcularVertices(Bitmap pic, List<Circulo> Circulos)
         {
+            pic = (Bitmap)pic.Clone();
             List<Vertices> nwVert = new List<Vertices>();
             foreach (Circulo item in Circulos)
             {
@@ -197,13 +198,14 @@ namespace CircleDetect
             }
             for (int i = 0; i < Circulos.Count; i++)
             {
+                //MessageBox.Show("Cola");
                 for (int j = 0; j < Circulos.Count; j++)
                 {
                     if (i != j)
                     {
                         int pesoAr;
                         List<Point> caminoAr;
-                        caminoAr = bresenham((Bitmap)pic.Clone(), Circulos[i], Circulos[j]);
+                        caminoAr = bresenham((Bitmap)pic, Circulos[i], Circulos[j]);
                         if (caminoAr.Count > 0)
                         {
                             pesoAr = (int)Distancia(nwVert[j].punto, nwVert[i].punto);
@@ -256,7 +258,7 @@ namespace CircleDetect
             } 
             return false;
         }
-        public ARM Kruscal(ARM arm, List<Vertices> sGrafo)
+        /*public ARM Kruscal(ARM arm, List<Vertices> sGrafo)
         {
                 List<Vertices> visitados = new List<Vertices>();
                 Arista minAr;
@@ -301,7 +303,7 @@ namespace CircleDetect
                 arm.ordenA = promete;
                 return arm;
 
-        }
+        }*/
         public static Vertices findVertList(List<Vertices>lista, string id)
         {
             foreach (var Vert in lista)

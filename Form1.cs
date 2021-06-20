@@ -174,13 +174,13 @@ namespace CircleDetect
 
 
             grafo.subGrafos();
-            grafo.mostrarGrafo(copia);
+            //grafo.mostrarGrafo(copia);
             //grafo.matriz(dataGridView1);
 
             foreach (var subGraph in grafo.LSubGrafos)
             {
                 var nwKruskal = new ARM();
-                aKruskal.Add(grafo.Kruscal(nwKruskal, subGraph));             
+                //aKruskal.Add(grafo.Kruscal(nwKruskal, subGraph));             
             }
 
             foreach (var a_kruskal in aKruskal)
@@ -284,7 +284,7 @@ namespace CircleDetect
             for (int i = 0; i < vCamino.Count-1; i++)
             {
                 Graphics f = Graphics.FromImage(Camino);
-                Pen p = new Pen(Color.Blue, 4);
+                Pen p = new Pen(Color.Red, 1);
                 f.DrawLine(p, vCamino[i].punto, vCamino[i + 1].punto);
             }
             FuncionesDjstr.dibujaPart(VOrigen.punto, Camino, estrella);
@@ -315,7 +315,7 @@ namespace CircleDetect
                     for (int i = 0; i < vCamino.Count - 1; i++)
                     {
                         Graphics f = Graphics.FromImage(Camino);
-                        Pen p = new Pen(Color.Blue, 4);
+                        Pen p = new Pen(Color.Red, 1);
                         f.DrawLine(p, vCamino[i].punto, vCamino[i + 1].punto);
                     }
                     FuncionesDjstr.dibujaPart(punto, Camino, estrella);
