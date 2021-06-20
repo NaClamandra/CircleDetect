@@ -29,6 +29,7 @@ namespace CircleDetect
         List<Circulo> masCercanos = new List<Circulo>();
         bool eGrafo;
         Image estrella = Grafo.scaleSize(new Size(40,40), Image.FromFile("..\\..\\..\\images\\estrella.png"));
+        Image flor = Grafo.scaleSize(new Size(40, 40), Image.FromFile("..\\..\\..\\images\\flor.png"));
         public Form_Principal()
         {
             InitializeComponent();
@@ -120,6 +121,7 @@ namespace CircleDetect
                 pictureBox1.Size = new Size(1123, 794);
                 button1.Enabled = false;
                 button3.Enabled = false;
+                button4.Enabled = false;
                 VOrigen = null;
                 VDestino = null;
                 label3.Text = "";
@@ -160,7 +162,7 @@ namespace CircleDetect
             drawFormat.FormatFlags = StringFormatFlags.DirectionRightToLeft;
             Font drawFont = new Font("Arial", 15);
             eGrafo = true;
-
+            
             grafo.subGrafos();
             grafo.mostrarGrafo(copia,progressBar1);
 
@@ -209,6 +211,10 @@ namespace CircleDetect
                                 VOrigen = VertClk;
                                 Camino = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
                                 pictureBox1.Image = Camino;
+                                if (VDestino!=null)
+                                {
+                                    FuncionesDjstr.dibujaPart(VDestino.punto, Camino, flor);
+                                }
                                 FuncionesDjstr.dibujaPart(VOrigen.punto, Camino, estrella);
                             }
                             break;
@@ -216,6 +222,13 @@ namespace CircleDetect
                             {
                                 label6.Text = VertClk.name;
                                 VDestino = VertClk;
+                                Camino = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
+                                pictureBox1.Image = Camino;
+                                if (VOrigen!=null)
+                                {
+                                    FuncionesDjstr.dibujaPart(VOrigen.punto, Camino, estrella);
+                                }
+                                FuncionesDjstr.dibujaPart(VDestino.punto, Camino, flor);
                             }
                             break;
                         default:
@@ -227,6 +240,7 @@ namespace CircleDetect
                         vCamino = null;
                         button1.Enabled = false;
                         button3.Enabled = false;
+                        button4.Enabled = false;
                     }
                     else if (VDestino != null && VOrigen != null)
                     {
@@ -234,6 +248,7 @@ namespace CircleDetect
                         vCamino = FuncionesDjstr.obtenerVertices(eDijstra, VDestino, VOrigen);
                         button1.Enabled = true;
                         button3.Enabled = true;
+                        button4.Enabled = true;
                     }
                 }
 
@@ -252,6 +267,7 @@ namespace CircleDetect
                 f.DrawLine(p, vCamino[i].punto, vCamino[i + 1].punto);
             }
             FuncionesDjstr.dibujaPart(VOrigen.punto, Camino, estrella);
+            FuncionesDjstr.dibujaPart(VDestino.punto, Camino, flor);
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -283,15 +299,35 @@ namespace CircleDetect
                         f.DrawLine(p, vCamino[i].punto, vCamino[i + 1].punto);
                     }
                     FuncionesDjstr.dibujaPart(punto, Camino, estrella);
+                    FuncionesDjstr.dibujaPart(VDestino.punto, Camino, flor);
                     pictureBox1.Refresh();
                     System.Threading.Thread.Sleep(1);
                 }
             }
+            Camino = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
+            pictureBox1.Image = Camino;
             label3.Text = VDestino.name;
             VOrigen = VDestino;
+            FuncionesDjstr.dibujaPart(VOrigen.punto, Camino, estrella);
+            FuncionesDjstr.dibujaPart(VDestino.punto, Camino, estrella);
+            eDijstra = FuncionesDjstr.elementoDjistra(grafo, VOrigen);
             vCamino = FuncionesDjstr.obtenerVertices(eDijstra, VDestino, VOrigen);
             button3.Enabled = true;
             button1.Enabled = true;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            List<Grafo.Vertices> camino;
+            Camino = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
+            pictureBox1.Image = Camino;
+            foreach (Grafo.Vertices v in grafo.LSubGrafos[VOrigen.grupo-1])
+            {
+                camino = FuncionesDjstr.obtenerVertices(eDijstra, v, VOrigen);
+                FuncionesDjstr.dCamino(camino,Camino, Color.Red, 2);
+            }
+            FuncionesDjstr.dibujaPart(VOrigen.punto, Camino, estrella);
+            FuncionesDjstr.dibujaPart(VDestino.punto, Camino, flor);
         }
     }
 }

@@ -214,7 +214,7 @@ namespace CircleDetect
             }
         }
         public Bitmap escalaImg(PictureBox picture, Bitmap img_C)
-        {
+        {       
             if (img_C.Width > picture.Width || img_C.Height > picture.Height)
             {
                 float scale;

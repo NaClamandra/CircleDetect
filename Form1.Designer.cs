@@ -43,6 +43,7 @@ namespace CircleDetect
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.button4 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -154,14 +155,14 @@ namespace CircleDetect
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(147, 23);
             this.button1.TabIndex = 25;
-            this.button1.Text = "Ver caminos";
+            this.button1.Text = "Ver camino";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button3
             // 
             this.button3.Enabled = false;
-            this.button3.Location = new System.Drawing.Point(1274, 578);
+            this.button3.Location = new System.Drawing.Point(1274, 571);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(147, 23);
             this.button3.TabIndex = 26;
@@ -177,6 +178,17 @@ namespace CircleDetect
             this.progressBar1.Step = 1;
             this.progressBar1.TabIndex = 27;
             // 
+            // button4
+            // 
+            this.button4.Enabled = false;
+            this.button4.Location = new System.Drawing.Point(1274, 623);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(147, 23);
+            this.button4.TabIndex = 28;
+            this.button4.Text = "Ver todos los caminos";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // Form_Principal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -184,6 +196,7 @@ namespace CircleDetect
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(1609, 941);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
@@ -224,6 +237,7 @@ namespace CircleDetect
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Button button4;
     }
 }
 

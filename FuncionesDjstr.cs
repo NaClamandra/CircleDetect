@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
+using System.Linq;
 
 namespace CircleDetect
 {
@@ -140,6 +141,16 @@ namespace CircleDetect
         {
             Graphics g = Graphics.FromImage(image);
             g.DrawImage(part, punto.X - (part.Width / 2 - 1), punto.Y - (part.Width / 2 - 1));
+        }
+
+        public static void dCamino(List<Grafo.Vertices> vCamino, Image img, Color color, int size)
+        {
+            Graphics g = Graphics.FromImage(img);
+            Pen p = new Pen(color, size);
+            for (int i = 0; i < vCamino.Count() - 1; i++)
+            {
+                g.DrawLine(p, vCamino[i].punto, vCamino[i + 1].punto);
+            }
         }
     }
 }
