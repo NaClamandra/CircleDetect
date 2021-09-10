@@ -1,28 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Drawing;
 
 namespace CircleDetect
 {
     public class Circulo
     {
         public int id;
-        public int centrox;
-        public int centroy;
+        public Point puntoC;
         public int radio;
         public double area;
 
         public Circulo(int ID,int centro_x, int centro_y, int radio_, double area_)
         {
             id = ID;
-            centrox = centro_x;
-            centroy = centro_y;
+            puntoC = new Point(centro_x, centro_y);
             radio = radio_;
             area = area_;
         }
         public override string ToString()
         {
-            return String.Format("({4}) Centro({0},{1}), Area({2}), Radio({3})", centrox,centroy,area,radio,id) ;
+            return String.Format("({4}) Centro({0},{1}), Area({2}), Radio({3})", puntoC.X,puntoC.Y,area,radio,id) ;
         }
     }
 }
